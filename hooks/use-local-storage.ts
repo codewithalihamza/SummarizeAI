@@ -13,7 +13,7 @@ type SetValue<T> = (value: T | ((val: T) => T)) => void;
  */
 export function useLocalStorage<T>(
   key: string,
-  initialValue: T
+  initialValue: T,
 ): [T, SetValue<T>] {
   // State to store the current value, defaults to the initialValue if not in localStorage
   const [storedValue, setStoredValue] = useState<T>(() => {
@@ -49,7 +49,7 @@ export function useLocalStorage<T>(
         console.error(`Error setting localStorage key “${key}”:`, error);
       }
     },
-    [key, storedValue]
+    [key, storedValue],
   );
 
   /**
@@ -64,7 +64,7 @@ export function useLocalStorage<T>(
         } catch (error) {
           console.error(
             `Error parsing localStorage value for key “${key}”:`,
-            error
+            error,
           );
         }
       }
