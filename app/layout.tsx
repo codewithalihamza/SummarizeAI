@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import dynamic from 'next/dynamic';
+import { Source_Sans_3 as Font } from "next/font/google";
 import "./globals.css";
+const Header = dynamic(() => import('@/components/header/header'), {
+  ssr: true
+});
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const geistSans = Font({
+  variable: "--font-sans",
+  subsets: ["latin"],
+  weight: ["200", "300", "400", "500", "600", "700", "800", "900"],
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+
 
 export const metadata: Metadata = {
   title: "SummarizeAI",
@@ -25,9 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} font-sans antialiased min-h-screen`}>
+        <Header />
         {children}
       </body>
     </html>
