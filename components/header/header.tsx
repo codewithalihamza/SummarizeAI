@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import logo from "@/public/logo.png";
 import Image from "next/image";
 import Link from "next/link";
@@ -63,15 +62,11 @@ const Header = () => {
 
                 {/* Right side - Auth */}
                 <div className="flex items-center space-x-4">
-                    <Link href="/sign-in" className="inline-block group">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="relative overflow-hidden bg-transparent border border-[#4F6BFF]/50 text-white transition-all duration-300 hover:border-[#4F6BFF] hover:bg-[#4F6BFF]/10 group-hover:shadow-[0_0_20px_rgba(79,107,255,0.3)]"
-                        >
-                            <span className="relative z-10">Sign In</span>
-                            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#4F6BFF]/0 via-[#4F6BFF]/30 to-[#4F6BFF]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                        </Button>
+                    <Link
+                        href="/sign-in"
+                        className="nav-link font-medium text-sm text-gray-400 transition-all duration-300 hover:text-white relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#4F6BFF] after:transition-all after:duration-300 hover:after:w-full"
+                    >
+                        Sign In
                     </Link>
                 </div>
             </div>
