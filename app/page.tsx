@@ -26,7 +26,8 @@ export default function Home() {
             </span>
           </h1>
           <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-            Save time and extract key insights effortlessly with our advanced AI-powered summarization tool
+            Save time and extract key insights effortlessly with our advanced
+            AI-powered summarization tool
           </p>
         </div>
 
@@ -43,8 +44,18 @@ export default function Home() {
 
         {/* Features Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-12">
-          {["Fast & Accurate", "100% Secure", "Export to Markdown", "Multiple Formats", "AI-Powered", "24/7 Support"].map((feature) => (
-            <div key={feature} className="px-4 py-3 rounded-lg border border-[#4F6BFF]/10 bg-black/30 backdrop-blur-sm text-gray-300 text-sm hover:border-[#4F6BFF]/30 hover:bg-black/50 transition-all duration-300">
+          {[
+            "Fast & Accurate",
+            "100% Secure",
+            "Export to Markdown",
+            "Multiple Formats",
+            "AI-Powered",
+            "24/7 Support",
+          ].map((feature) => (
+            <div
+              key={feature}
+              className="px-4 py-3 rounded-lg border border-[#4F6BFF]/10 bg-black/30 backdrop-blur-sm text-gray-300 text-sm hover:border-[#4F6BFF]/30 hover:bg-black/50 transition-all duration-300"
+            >
               {feature}
             </div>
           ))}
