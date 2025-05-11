@@ -36,7 +36,7 @@ export default function ChangePassword() {
     };
 
     return (
-        <div className="space-y-8 pt-12">
+        <div className="space-y-8">
             {/* Header */}
             <div>
                 <h1 className="text-3xl font-bold">Change Password</h1>

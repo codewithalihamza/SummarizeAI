@@ -72,7 +72,7 @@ export default function Documents() {
     );
 
     return (
-        <div className="space-y-8 pt-12">
+        <div className="space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>

@@ -5,6 +5,7 @@ import logo from "@/public/logo.png";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import * as React from "react";
 
 const navigationItems = [
@@ -18,13 +19,15 @@ const navigationItems = [
 const Header = () => {
     const [mounted, setMounted] = React.useState(false);
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+    const pathname = usePathname();
 
     React.useEffect(() => {
         setMounted(true);
     }, []);
 
-    if (!mounted) {
-        return <header className="h-14" />;
+    // Hide header on dashboard routes
+    if (!mounted || pathname?.startsWith("/dashboard")) {
+        return null;
     }
 
     return (

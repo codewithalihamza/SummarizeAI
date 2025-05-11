@@ -20,7 +20,7 @@ export default function ProfileSettings() {
     };
 
     return (
-        <div className="space-y-8 pt-12">
+        <div className="space-y-8">
             {/* Header */}
             <div>
                 <h1 className="text-3xl font-bold">Profile Details</h1>

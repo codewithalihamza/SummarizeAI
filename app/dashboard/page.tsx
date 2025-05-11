@@ -74,7 +74,7 @@ const recentDocuments = [
 
 export default function Dashboard() {
     return (
-        <div className="space-y-8 pt-12">
+        <div className="space-y-8">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
