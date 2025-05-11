@@ -1,11 +1,16 @@
 "use client";
 
 import {
+    ChevronDown,
+    ChevronUp,
+    CreditCard,
     FileText,
+    Key,
     LayoutDashboard,
     LogOut,
     Menu,
     Settings,
+    User,
     X,
 } from "lucide-react";
 import Link from "next/link";
@@ -23,10 +28,23 @@ const sidebarItems = [
         href: "/dashboard/documents",
         icon: FileText,
     },
+];
+
+const settingsDropdownItems = [
     {
-        name: "Settings",
-        href: "/dashboard/settings",
-        icon: Settings,
+        name: "Profile Details",
+        href: "/dashboard/settings/profile",
+        icon: User,
+    },
+    {
+        name: "Change Password",
+        href: "/dashboard/settings/password",
+        icon: Key,
+    },
+    {
+        name: "Subscription",
+        href: "/dashboard/settings/subscription",
+        icon: CreditCard,
     },
 ];
 
@@ -36,7 +54,10 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const pathname = usePathname();
+
+    const isSettingsActive = pathname?.startsWith("/dashboard/settings");
 
     return (
         <div className="relative min-h-screen bg-black text-white">
@@ -71,6 +92,7 @@ export default function DashboardLayout({
                     {/* Navigation */}
                     <nav className="flex-1 px-4">
                         <ul className="space-y-2">
+                            {/* Regular menu items */}
                             {sidebarItems.map((item) => {
                                 const isActive = pathname === item.href;
                                 return (
@@ -88,6 +110,51 @@ export default function DashboardLayout({
                                     </li>
                                 );
                             })}
+
+                            {/* Settings Dropdown */}
+                            <li>
+                                <button
+                                    onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+                                    className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${isSettingsActive
+                                        ? "bg-[#4F6BFF] text-white"
+                                        : "hover:bg-[#4F6BFF]/10"
+                                        }`}
+                                >
+                                    <div className="flex items-center space-x-3">
+                                        <Settings className="h-5 w-5" />
+                                        <span>Settings</span>
+                                    </div>
+                                    {isSettingsOpen ? (
+                                        <ChevronUp className="h-4 w-4" />
+                                    ) : (
+                                        <ChevronDown className="h-4 w-4" />
+                                    )}
+                                </button>
+                                {/* Settings Dropdown Items */}
+                                {isSettingsOpen && (
+                                    <ul className="mt-2 ml-4 space-y-2">
+                                        {settingsDropdownItems.map((item) => {
+                                            const isActive = pathname === item.href;
+                                            return (
+                                                <li key={item.name}>
+                                                    <Link
+                                                        href={item.href}
+                                                        className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive
+                                                            ? "bg-[#4F6BFF]/20 text-white"
+                                                            : "text-gray-400 hover:bg-[#4F6BFF]/10 hover:text-white"
+                                                            }`}
+                                                    >
+                                                        <item.icon className="h-4 w-4 mr-2" />
+                                                        <div>
+                                                            <div className="text-sm">{item.name}</div>
+                                                        </div>
+                                                    </Link>
+                                                </li>
+                                            );
+                                        })}
+                                    </ul>
+                                )}
+                            </li>
                         </ul>
                     </nav>
 
