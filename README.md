@@ -2,10 +2,7 @@
 
 SummarizeAI is a powerful AI-driven SaaS tool that converts lengthy PDF documents into clear, concise summaries in seconds. Whether you're a student, researcher, or busy professional, SummarizeAI helps you save time and extract key insights effortlessly.
 
-🌐 **[Live Demo: summarize-ai-eta.vercel.app](https://summarize-ai-eta.vercel.app)**
-
-[![SummarizeAI Website Preview](https://github-production-user-asset-6210df.s3.amazonaws.com/assets/placeholder-image.png)](https://summarize-ai-eta.vercel.app)
-*Click the image above to visit the live website*
+[![SummarizeAI](./homepage.png)](https://summarize-ai-eta.vercel.app)
 
 ## ✨ Features
 
