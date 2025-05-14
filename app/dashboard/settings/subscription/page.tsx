@@ -2,53 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { CreditCard, Download } from "lucide-react";
-
-const plans = [
-  {
-    name: "Basic",
-    price: "$9.99",
-    period: "per month",
-    description: "Perfect for individuals and small projects",
-    features: [
-      "10 PDF summaries per month",
-      "Basic AI summarization",
-      "Export to PDF/Word",
-      "Email support",
-    ],
-    popular: false,
-  },
-  {
-    name: "Pro",
-    price: "$24.99",
-    period: "per month",
-    description: "Ideal for professionals and teams",
-    features: [
-      "50 PDF summaries per month",
-      "Advanced AI summarization",
-      "Priority processing",
-      "Custom export formats",
-      "Priority support",
-      "Team sharing",
-    ],
-    popular: true,
-  },
-  {
-    name: "Enterprise",
-    price: "$99.99",
-    period: "per month",
-    description: "For large organizations with custom needs",
-    features: [
-      "Unlimited PDF summaries",
-      "Custom AI model training",
-      "API access",
-      "Advanced analytics",
-      "24/7 dedicated support",
-      "Custom integration",
-      "SSO & advanced security",
-    ],
-    popular: false,
-  },
-];
+import Link from "next/link";
 
 export default function Subscription() {
   return (
@@ -119,12 +73,9 @@ export default function Subscription() {
       <div className="text-center">
         <p className="text-gray-400">
           Need help with your subscription?{" "}
-          <a
-            href="mailto:support@summarizeai.com"
-            className="text-[#4F6BFF] hover:text-[#4F6BFF]/80"
-          >
+          <Link href="/contact" className="text-[#4F6BFF]">
             Contact support
-          </a>
+          </Link>
         </p>
       </div>
     </div>
