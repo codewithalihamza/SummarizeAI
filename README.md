@@ -2,6 +2,9 @@
 
 SummarizeAI is a powerful AI-driven SaaS tool that converts lengthy PDF documents into clear, concise summaries in seconds. Whether you're a student, researcher, or busy professional, SummarizeAI helps you save time and extract key insights effortlessly.
 
+🚧 **Project Status: In Development** 🚧
+This project is currently under active development. Features are being added and refined regularly.
+
 [![SummarizeAI](./public/homepage.png)](https://summarize-ai-eta.vercel.app)
 
 ## ✨ Features
@@ -26,12 +29,20 @@ SummarizeAI is a powerful AI-driven SaaS tool that converts lengthy PDF document
 - 🤖 GPT-4 | Gemini powered summarization with contextual understanding and emoji-enhanced output
 - 🧠 Langchain for PDF parsing, text extraction, and document chunking
 - 🎨 ShadcN UI for accessible, customizable React components
-- 💾 NeonDB (PostgreSQL) for serverless database storage of summaries and user data
+- 💾 NeonDB (PostgreSQL) for serverless database storage with Drizzle ORM
 - 📤 UploadThing for secure PDF uploads (up to 32MB) and file management
 - 🔔 Toast notifications for user feedback
 - 📜 TypeScript for static typing and enhanced development experience
 - 💅 TailwindCSS 4 for utility-first, responsive styling
 - 🚀 Deployment on Vercel
+
+## Database Setup
+
+The project uses NeonDB (PostgreSQL) with Drizzle ORM for database management. The schema includes:
+
+- Users table with secure password hashing
+- Document storage and management
+- Summary tracking and user preferences
 
 ## Installation
 
@@ -43,6 +54,18 @@ SummarizeAI is a powerful AI-driven SaaS tool that converts lengthy PDF document
 2. Install dependencies using NPM:
    ```bash
    npm install
+   ```
+
+3. Set up your environment variables:
+   Create a `.env` file in the root directory with:
+   ```env
+   DATABASE_URL="your_neondb_connection_string"
+   ```
+
+4. Run database migrations:
+   ```bash
+   npm run db:generate
+   npm run db:push
    ```
 
 ## Usage
@@ -65,6 +88,15 @@ To start the production server:
 npm run start
 ```
 
+## Current Development Status
+
+🚧 **Features in Progress:**
+- User authentication system with secure session management
+- PDF processing pipeline optimization
+- Advanced summary customization options
+- Enhanced error handling and user feedback
+- Performance optimizations for large documents
+
 ## Documentation Links
 
 - [react-icons documentation](https://react-icons.github.io/react-icons/)
@@ -75,3 +107,8 @@ npm run start
 - [Langchain documentation](https://js.langchain.com/docs/)
 - [NeonDB documentation](https://neon.tech/docs)
 - [UploadThing documentation](https://uploadthing.com/docs)
+- [Drizzle ORM documentation](https://orm.drizzle.team/docs/overview)
+
+## Contributing
+
+While this project is still in development, contributions are welcome! Please feel free to submit issues and pull requests.
