@@ -1,17 +1,22 @@
 "use client";
 
+import { signUp } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function SignUp() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -21,10 +26,24 @@ export default function SignUp() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle sign up logic here
-    console.log(formData);
+    setIsLoading(true);
+
+    try {
+      const result = await signUp(formData);
+
+      if (result.success) {
+        toast.success("Account created successfully!");
+        router.push("/sign-in");
+      } else {
+        toast.error(result.error || "Failed to create account");
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -62,6 +81,7 @@ export default function SignUp() {
                 onChange={handleChange}
                 className="w-full bg-black/50 border-[#4F6BFF]/30 text-white placeholder:text-gray-500 focus:border-[#4F6BFF] focus:ring-1 focus:ring-[#4F6BFF] transition-all duration-300"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -81,6 +101,7 @@ export default function SignUp() {
                 onChange={handleChange}
                 className="w-full bg-black/50 border-[#4F6BFF]/30 text-white placeholder:text-gray-500 focus:border-[#4F6BFF] focus:ring-1 focus:ring-[#4F6BFF] transition-all duration-300"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -100,6 +121,7 @@ export default function SignUp() {
                 onChange={handleChange}
                 className="w-full bg-black/50 border-[#4F6BFF]/30 text-white placeholder:text-gray-500 focus:border-[#4F6BFF] focus:ring-1 focus:ring-[#4F6BFF] transition-all duration-300"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -119,6 +141,7 @@ export default function SignUp() {
                 onChange={handleChange}
                 className="w-full bg-black/50 border-[#4F6BFF]/30 text-white placeholder:text-gray-500 focus:border-[#4F6BFF] focus:ring-1 focus:ring-[#4F6BFF] transition-all duration-300"
                 required
+                disabled={isLoading}
               />
             </div>
 
@@ -150,8 +173,9 @@ export default function SignUp() {
             <Button
               type="submit"
               className="w-full bg-[#4F6BFF] text-white hover:bg-[#4F6BFF]/90 transition-all duration-300 mt-6"
+              disabled={isLoading}
             >
-              Create Account
+              {isLoading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
 
