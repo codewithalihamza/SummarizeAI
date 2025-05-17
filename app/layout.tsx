@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/providers/toaster";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Source_Sans_3 as Font } from "next/font/google";
@@ -31,6 +32,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        <Toaster />
       </body>
     </html>
   );
