@@ -1,10 +1,11 @@
+import { config } from "dotenv";
 import type { Config } from 'drizzle-kit';
-
+config({ path: ".env.local" }); // or .env
 export default {
     schema: './drizzle/schema.ts',
     out: './drizzle/migrations',
     driver: 'pg',
     dbCredentials: {
-        connectionString: 'postgresql://neondb_owner:npg_5SulJPRDWL9g@ep-lingering-wave-a46ymoo4-pooler.us-east-1.aws.neon.tech/Next.js?sslmode=require',
+        connectionString: process.env.NEXT_PUBLIC_DATABASE_URL!,
     },
 } satisfies Config; 
