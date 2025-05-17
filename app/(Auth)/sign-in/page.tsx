@@ -3,6 +3,8 @@
 import { signIn } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DEFAULT_LOGIN_REDIRECT } from "@/constants/routes";
+import { saveUserSession } from "@/lib/session/userSession";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -20,14 +22,20 @@ export default function SignIn() {
 
     try {
       const result = await signIn({ email, password });
-
-      if (result.success) {
+      if (result.success && result.user) {
+        saveUserSession({
+          id: result.user.id,
+          email: result.user.email,
+          name: result.user.name,
+        });
         toast.success("Signed in successfully!");
-        router.push("/dashboard");
-      } else {
+        router.push(DEFAULT_LOGIN_REDIRECT);
+        router.refresh();
+      } else if (!result.success) {
         toast.error(result.error || "Failed to sign in");
       }
     } catch (error) {
+      console.log('error', error);
       toast.error("An unexpected error occurred");
     } finally {
       setIsLoading(false);
@@ -92,16 +100,6 @@ export default function SignIn() {
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center">
-                <input
-                  id="remember"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-[#4F6BFF]/30 bg-black/50 text-[#4F6BFF] focus:ring-[#4F6BFF] focus:ring-offset-0"
-                />
-                <label htmlFor="remember" className="ml-2 text-gray-300">
-                  Remember me
-                </label>
-              </div>
               <Link
                 href="/forgot-password"
                 className="text-[#4F6BFF] hover:text-[#4F6BFF]/80 transition-colors"

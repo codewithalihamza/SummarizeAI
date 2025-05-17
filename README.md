@@ -21,6 +21,7 @@ This project is currently under active development. Features are being added and
 - 📈 Performance optimizations
 - 🔍 SEO-friendly summary generation
 - 🗂️ Markdown Export that can be converted into a blog post
+- 🔑 Secure authentication with JWT and Edge Runtime support
 
 ## 🛠️ Core Technologies
 
@@ -35,6 +36,9 @@ This project is currently under active development. Features are being added and
 - 📜 TypeScript for static typing and enhanced development experience
 - 💅 TailwindCSS 4 for utility-first, responsive styling
 - 🚀 Deployment on Vercel
+- 🔐 Authentication with jose for Edge-compatible JWT operations
+- 🍪 Cookie management with universal-cookie
+- ✅ Form validation with Zod
 
 ## Database Setup
 

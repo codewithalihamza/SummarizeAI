@@ -7,8 +7,10 @@ import { z } from "zod";
 export async function signIn(data: z.infer<typeof signInSchema>) {
     try {
         const validatedData = signInSchema.parse(data);
-        return await AuthService.signIn(validatedData);
+        const result = await AuthService.signIn(validatedData);
+        return result;
     } catch (error) {
+        console.log('error', error);
         if (error instanceof z.ZodError) {
             return { success: false, error: error.errors[0].message };
         }
@@ -24,10 +26,16 @@ export async function signUp(data: z.infer<typeof signUpSchema>) {
             email: validatedData.email,
             password: validatedData.password,
         });
+
     } catch (error) {
         if (error instanceof z.ZodError) {
             return { success: false, error: error.errors[0].message };
         }
         return { success: false, error: 'Failed to create account' };
     }
-} 
+}
+
+export async function signOut() {
+    'use server';
+    return { success: true };
+}
