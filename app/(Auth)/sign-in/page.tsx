@@ -3,15 +3,15 @@
 import { signIn } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { DEFAULT_LOGIN_REDIRECT } from "@/constants/routes";
 import { saveUserSession } from "@/lib/session/userSession";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function SignIn() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -29,8 +29,7 @@ export default function SignIn() {
           name: result.user.name,
         });
         toast.success("Signed in successfully!");
-        const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
-        router.push(callbackUrl);
+        router.push(DEFAULT_LOGIN_REDIRECT);
         router.refresh();
       } else if (!result.success) {
         toast.error(result.error || "Failed to sign in");
