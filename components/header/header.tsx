@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { PUBLIC_ROUTES } from "@/constants/routes";
 import logo from "@/public/logo.png";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
@@ -85,13 +85,9 @@ const Header = () => {
 
         {/* Desktop Auth Button */}
         <div className="hidden md:block">
-          <Button
-            asChild
-            variant="outline"
-            className="border-[#4F6BFF]/20 hover:bg-[#4F6BFF]/10 text-white"
-          >
-            <Link href="/sign-in">Sign In</Link>
-          </Button>
+          <Link href={PUBLIC_ROUTES.LOGIN}
+            className="nav-link font-medium text-sm text-gray-400 transition-all duration-300 hover:text-white relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#4F6BFF] after:transition-all after:duration-300 hover:after:w-full"
+          >Sign In</Link>
         </div>
 
         {/* Mobile Menu */}

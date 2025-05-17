@@ -101,16 +101,6 @@ export default function SignIn() {
             </div>
 
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center">
-                <input
-                  id="remember"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-[#4F6BFF]/30 bg-black/50 text-[#4F6BFF] focus:ring-[#4F6BFF] focus:ring-offset-0"
-                />
-                <label htmlFor="remember" className="ml-2 text-gray-300">
-                  Remember me
-                </label>
-              </div>
               <Link
                 href="/forgot-password"
                 className="text-[#4F6BFF] hover:text-[#4F6BFF]/80 transition-colors"

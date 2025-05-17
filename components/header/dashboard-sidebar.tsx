@@ -1,6 +1,7 @@
 "use client";
 
 import { signOut } from "@/app/actions/auth";
+import { PUBLIC_ROUTES } from "@/constants/routes";
 import { clearSession } from "@/lib/session/userSession";
 import {
   ChevronDown,
@@ -162,7 +163,7 @@ export function DashboardSidebar() {
               onClick={async () => {
                 await signOut();
                 await clearSession();
-                router.push('/sign-in');
+                router.push(PUBLIC_ROUTES.LOGIN);
                 router.refresh();
               }}
               className="flex items-center space-x-3 px-4 py-3 w-full rounded-lg hover:bg-[#4F6BFF]/10 transition-colors"
