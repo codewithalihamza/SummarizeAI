@@ -1,5 +1,7 @@
 "use client";
 
+import { signOut } from "@/app/actions/auth";
+import { clearSession } from "@/lib/session/userSession";
 import {
   ChevronDown,
   ChevronUp,
@@ -14,7 +16,7 @@ import {
   X,
 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 const sidebarItems = [
@@ -52,6 +54,7 @@ export function DashboardSidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const isSettingsActive = pathname?.startsWith("/dashboard/settings");
 
@@ -71,9 +74,8 @@ export function DashboardSidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 h-full w-64 bg-black/50 backdrop-blur-xl border-r border-[#4F6BFF]/20 transition-transform duration-300 ${
-          isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`fixed top-0 left-0 z-40 h-full w-64 bg-black/50 backdrop-blur-xl border-r border-[#4F6BFF]/20 transition-transform duration-300 ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
@@ -95,11 +97,10 @@ export function DashboardSidebar() {
                   <li key={item.name}>
                     <Link
                       href={item.href}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                        isActive
-                          ? "bg-[#4F6BFF] text-white"
-                          : "hover:bg-[#4F6BFF]/10"
-                      }`}
+                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive
+                        ? "bg-[#4F6BFF] text-white"
+                        : "hover:bg-[#4F6BFF]/10"
+                        }`}
                     >
                       <item.icon className="h-5 w-5" />
                       <span>{item.name}</span>
@@ -112,11 +113,10 @@ export function DashboardSidebar() {
               <li>
                 <button
                   onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-                  className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${
-                    isSettingsActive
-                      ? "bg-[#4F6BFF] text-white"
-                      : "hover:bg-[#4F6BFF]/10"
-                  }`}
+                  className={`flex items-center justify-between w-full px-4 py-3 rounded-lg transition-colors ${isSettingsActive
+                    ? "bg-[#4F6BFF] text-white"
+                    : "hover:bg-[#4F6BFF]/10"
+                    }`}
                 >
                   <div className="flex items-center space-x-3">
                     <Settings className="h-5 w-5" />
@@ -137,11 +137,10 @@ export function DashboardSidebar() {
                         <li key={item.name}>
                           <Link
                             href={item.href}
-                            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
-                              isActive
-                                ? "bg-[#4F6BFF]/20 text-white"
-                                : "text-gray-400 hover:bg-[#4F6BFF]/10 hover:text-white"
-                            }`}
+                            className={`flex items-center px-4 py-2 rounded-lg transition-colors ${isActive
+                              ? "bg-[#4F6BFF]/20 text-white"
+                              : "text-gray-400 hover:bg-[#4F6BFF]/10 hover:text-white"
+                              }`}
                           >
                             <item.icon className="h-4 w-4 mr-2" />
                             <div>
@@ -159,7 +158,15 @@ export function DashboardSidebar() {
 
           {/* User Section */}
           <div className="p-4 border-t border-[#4F6BFF]/20">
-            <button className="flex items-center space-x-3 px-4 py-3 w-full rounded-lg hover:bg-[#4F6BFF]/10 transition-colors">
+            <button
+              onClick={async () => {
+                await signOut();
+                await clearSession();
+                router.push('/sign-in');
+                router.refresh();
+              }}
+              className="flex items-center space-x-3 px-4 py-3 w-full rounded-lg hover:bg-[#4F6BFF]/10 transition-colors"
+            >
               <LogOut className="h-5 w-5" />
               <span>Sign Out</span>
             </button>

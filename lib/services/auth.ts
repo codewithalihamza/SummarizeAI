@@ -51,7 +51,6 @@ export class AuthService {
             if (!validPassword) {
                 return { success: false, error: 'Invalid credentials' };
             }
-
             return { success: true, user };
         } catch (error) {
             console.error('Sign in error:', error);

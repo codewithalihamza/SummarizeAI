@@ -3,13 +3,15 @@
 import { signIn } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { saveUserSession } from "@/lib/session/userSession";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export default function SignIn() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -20,14 +22,21 @@ export default function SignIn() {
 
     try {
       const result = await signIn({ email, password });
-
-      if (result.success) {
+      if (result.success && result.user) {
+        saveUserSession({
+          id: result.user.id,
+          email: result.user.email,
+          name: result.user.name,
+        });
         toast.success("Signed in successfully!");
-        router.push("/dashboard");
-      } else {
+        const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+        router.push(callbackUrl);
+        router.refresh();
+      } else if (!result.success) {
         toast.error(result.error || "Failed to sign in");
       }
     } catch (error) {
+      console.log('error', error);
       toast.error("An unexpected error occurred");
     } finally {
       setIsLoading(false);
