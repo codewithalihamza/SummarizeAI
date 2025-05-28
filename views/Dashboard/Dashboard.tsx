@@ -5,11 +5,12 @@ import { Input } from "@/components/ui/input";
 import { useUploadPdfHook } from "@/hooks/upload-pdf.hook";
 import { cookies } from "@/lib/session/userSession";
 import { Upload, X } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 
 const Dashboard = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isSaving, setIsSaving] = useState(false);
     const {
         selectedFile,
         isUploading,
@@ -30,6 +31,7 @@ const Dashboard = () => {
                 return;
             }
 
+            setIsSaving(true);
             const result = await createPdfSummary({
                 userId: userId,
                 originalFileUrl: uploadedFile.url,
@@ -46,8 +48,17 @@ const Dashboard = () => {
         } catch (error) {
             console.error('Error in handleUpload:', error);
             toast.error('Failed to process PDF');
+        } finally {
+            setIsSaving(false);
         }
     };
+
+    const isProcessing = isUploading || isSaving;
+    const buttonText = isUploading
+        ? "Uploading..."
+        : isSaving
+            ? "Saving..."
+            : "Confirm Upload";
 
     return (
         <div className="space-y-8">
@@ -98,6 +109,7 @@ const Dashboard = () => {
                                     variant="ghost"
                                     size="icon"
                                     onClick={clearSelectedFile}
+                                    disabled={isProcessing}
                                 >
                                     <X className="h-5 w-5" />
                                 </Button>
@@ -106,9 +118,9 @@ const Dashboard = () => {
                             <Button
                                 className="w-full bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
                                 onClick={handleUpload}
-                                disabled={isUploading}
+                                disabled={isProcessing}
                             >
-                                {isUploading ? "Uploading..." : "Confirm Upload"}
+                                {buttonText}
                             </Button>
                         </div>
                     )}
