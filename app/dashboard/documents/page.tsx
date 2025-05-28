@@ -9,12 +9,11 @@ import type { PdfSummary } from "@/lib/services/pdf";
 import { cookies } from "@/lib/session/userSession";
 import {
   FileText,
-  Filter,
   Grid,
   List,
   MoreVertical,
   Search,
-  Upload,
+  Upload
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -98,13 +97,6 @@ export default function Documents() {
           />
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            className="border-[#4F6BFF]/20 hover:bg-[#4F6BFF]/10"
-          >
-            <Filter className="h-5 w-5 mr-2" />
-            Filter
-          </Button>
           <div className="flex rounded-lg border border-[#4F6BFF]/20 overflow-hidden">
             <button
               className={`p-2 ${viewMode === "grid"
