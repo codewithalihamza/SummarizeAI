@@ -85,9 +85,12 @@ const Header = () => {
 
         {/* Desktop Auth Button */}
         <div className="hidden md:block">
-          <Link href={PUBLIC_ROUTES.LOGIN}
+          <Link
+            href={PUBLIC_ROUTES.LOGIN}
             className="nav-link font-medium text-sm text-gray-400 transition-all duration-300 hover:text-white relative after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-[#4F6BFF] after:transition-all after:duration-300 hover:after:w-full"
-          >Sign In</Link>
+          >
+            Sign In
+          </Link>
         </div>
 
         {/* Mobile Menu */}

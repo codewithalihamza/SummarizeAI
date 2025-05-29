@@ -13,7 +13,7 @@ import {
   List,
   MoreVertical,
   Search,
-  Upload
+  Upload,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -25,12 +25,12 @@ export default function Documents() {
   const [documents, setDocuments] = useState<PdfSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const userId = cookies.get('id');
+  const userId = cookies.get("id");
 
   useEffect(() => {
     const fetchDocuments = async () => {
       if (!userId) {
-        toast.error('User not authenticated');
+        toast.error("User not authenticated");
         return;
       }
 
@@ -39,11 +39,11 @@ export default function Documents() {
         if (result.success && result.pdfs) {
           setDocuments(result.pdfs);
         } else {
-          toast.error(result.error || 'Failed to fetch documents');
+          toast.error(result.error || "Failed to fetch documents");
         }
       } catch (error) {
-        console.error('Error fetching documents:', error);
-        toast.error('Failed to fetch documents');
+        console.error("Error fetching documents:", error);
+        toast.error("Failed to fetch documents");
       } finally {
         setIsLoading(false);
       }
@@ -53,15 +53,15 @@ export default function Documents() {
   }, [userId]);
 
   const filteredDocuments = documents.filter((doc) =>
-    doc.fileName.toLowerCase().includes(searchQuery.toLowerCase())
+    doc.fileName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const formatDate = (date: Date | null) => {
-    if (!date) return 'Unknown date';
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    if (!date) return "Unknown date";
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     }).format(new Date(date));
   };
 
@@ -99,19 +99,21 @@ export default function Documents() {
         <div className="flex gap-2">
           <div className="flex rounded-lg border border-[#4F6BFF]/20 overflow-hidden">
             <button
-              className={`p-2 ${viewMode === "grid"
-                ? "bg-[#4F6BFF] text-white"
-                : "hover:bg-[#4F6BFF]/10"
-                }`}
+              className={`p-2 ${
+                viewMode === "grid"
+                  ? "bg-[#4F6BFF] text-white"
+                  : "hover:bg-[#4F6BFF]/10"
+              }`}
               onClick={() => setViewMode("grid")}
             >
               <Grid className="h-5 w-5" />
             </button>
             <button
-              className={`p-2 ${viewMode === "list"
-                ? "bg-[#4F6BFF] text-white"
-                : "hover:bg-[#4F6BFF]/10"
-                }`}
+              className={`p-2 ${
+                viewMode === "list"
+                  ? "bg-[#4F6BFF] text-white"
+                  : "hover:bg-[#4F6BFF]/10"
+              }`}
               onClick={() => setViewMode("list")}
             >
               <List className="h-5 w-5" />
@@ -129,7 +131,9 @@ export default function Documents() {
           {filteredDocuments.length === 0 && (
             <div className="text-center py-12">
               <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-200">No documents found</h3>
+              <h3 className="text-lg font-medium text-gray-200">
+                No documents found
+              </h3>
               <p className="text-gray-400 mt-1">
                 {searchQuery
                   ? "Try adjusting your search terms"
@@ -139,8 +143,8 @@ export default function Documents() {
           )}
 
           {/* Documents Grid/List */}
-          {filteredDocuments.length > 0 && (
-            viewMode === "grid" ? (
+          {filteredDocuments.length > 0 &&
+            (viewMode === "grid" ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {filteredDocuments.map((doc) => (
                   <div
@@ -193,7 +197,9 @@ export default function Documents() {
                             {doc.fileName}
                           </div>
                         </td>
-                        <td className="p-4 text-gray-400">{formatDate(doc.createdAt)}</td>
+                        <td className="p-4 text-gray-400">
+                          {formatDate(doc.createdAt)}
+                        </td>
                         <td className="p-4">
                           <span
                             className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(doc.status)}`}
@@ -207,7 +213,9 @@ export default function Documents() {
                               variant="outline"
                               size="sm"
                               className="bg-[white] text-[#4F6BFF]"
-                              onClick={() => window.open(doc.originalFileUrl, '_blank')}
+                              onClick={() =>
+                                window.open(doc.originalFileUrl, "_blank")
+                              }
                             >
                               View PDF
                             </Button>
@@ -225,8 +233,7 @@ export default function Documents() {
                   </tbody>
                 </table>
               </div>
-            )
-          )}
+            ))}
         </>
       )}
     </div>

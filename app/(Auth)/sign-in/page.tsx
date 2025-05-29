@@ -35,7 +35,7 @@ export default function SignIn() {
         toast.error(result.error || "Failed to sign in");
       }
     } catch (error) {
-      console.log('error', error);
+      console.log("error", error);
       toast.error("An unexpected error occurred");
     } finally {
       setIsLoading(false);
