@@ -17,6 +17,16 @@ export type SignInData = {
 export class AuthService {
   static async signUp(data: SignUpData) {
     try {
+      // Check if user already exists
+      const [existingUser] = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, data.email));
+
+      if (existingUser) {
+        return { success: false, error: "Email already exists. Please sign in instead." };
+      }
+
       // Hash password
       const hashedPassword = await bcrypt.hash(data.password, 10);
 

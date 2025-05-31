@@ -7,10 +7,10 @@ import { DEFAULT_LOGIN_REDIRECT } from "@/constants/routes";
 import { saveUserSession } from "@/lib/session/userSession";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { toast } from "sonner";
 
-export default function SignIn() {
+function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState("");
@@ -44,6 +44,67 @@ export default function SignIn() {
   };
 
   return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label
+          htmlFor="email"
+          className="block text-sm font-medium text-gray-300 mb-1"
+        >
+          Email
+        </label>
+        <Input
+          id="email"
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full bg-black/50 border-[#4F6BFF]/30 text-white placeholder:text-gray-500 focus:border-[#4F6BFF] focus:ring-1 focus:ring-[#4F6BFF] transition-all duration-300"
+          required
+          disabled={isLoading}
+        />
+      </div>
+
+      <div>
+        <label
+          htmlFor="password"
+          className="block text-sm font-medium text-gray-300 mb-1"
+        >
+          Password
+        </label>
+        <Input
+          id="password"
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full bg-black/50 border-[#4F6BFF]/30 text-white placeholder:text-gray-500 focus:border-[#4F6BFF] focus:ring-1 focus:ring-[#4F6BFF] transition-all duration-300"
+          required
+          disabled={isLoading}
+        />
+      </div>
+
+      <div className="flex items-center justify-between text-sm">
+        <Link
+          href="/forgot-password"
+          className="text-[#4F6BFF] hover:text-[#4F6BFF]/80 transition-colors"
+        >
+          Forgot password?
+        </Link>
+      </div>
+
+      <Button
+        type="submit"
+        className="w-full bg-[#4F6BFF] text-white hover:bg-[#4F6BFF]/90 transition-all duration-300"
+        disabled={isLoading}
+      >
+        {isLoading ? "Signing in..." : "Sign In"}
+      </Button>
+    </form>
+  );
+}
+
+export default function SignIn() {
+  return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center p-4">
       {/* Background Effects */}
       <div className="absolute bg-[linear-gradient(to_right,#4F6BFF10_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF10_1px,transparent_1px)] bg-[size:24px_24px]" />
@@ -61,62 +122,9 @@ export default function SignIn() {
           </div>
 
           {/* Sign In Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-300 mb-1"
-              >
-                Email
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-black/50 border-[#4F6BFF]/30 text-white placeholder:text-gray-500 focus:border-[#4F6BFF] focus:ring-1 focus:ring-[#4F6BFF] transition-all duration-300"
-                required
-                disabled={isLoading}
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-300 mb-1"
-              >
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-black/50 border-[#4F6BFF]/30 text-white placeholder:text-gray-500 focus:border-[#4F6BFF] focus:ring-1 focus:ring-[#4F6BFF] transition-all duration-300"
-                required
-                disabled={isLoading}
-              />
-            </div>
-
-            <div className="flex items-center justify-between text-sm">
-              <Link
-                href="/forgot-password"
-                className="text-[#4F6BFF] hover:text-[#4F6BFF]/80 transition-colors"
-              >
-                Forgot password?
-              </Link>
-            </div>
-
-            <Button
-              type="submit"
-              className="w-full bg-[#4F6BFF] text-white hover:bg-[#4F6BFF]/90 transition-all duration-300"
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
-          </form>
+          <Suspense fallback={<div>Loading...</div>}>
+            <SignInForm />
+          </Suspense>
 
           {/* Sign Up Link */}
           <p className="mt-6 text-center text-sm text-gray-400">
