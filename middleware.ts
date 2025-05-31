@@ -8,7 +8,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, searchParams } = request.nextUrl;
 
   // Get the token from cookies
   const tokenData = request.cookies.get(COOKIE_TOKEN_NAME)?.value;
@@ -16,13 +16,17 @@ export async function middleware(request: NextRequest) {
 
   // Check if the user is authenticated
   const isAuthenticated = token && (await verifyToken(token));
-  const isPrivateRoute = Object.values(PRIVATE_ROUTES).includes(
-    pathname as any,
-  );
+  const isPrivateRoute = Object.values(PRIVATE_ROUTES).includes(pathname as any);
   const isPublicRoute = Object.values(PUBLIC_ROUTES).includes(pathname as any);
 
-  // Redirect authenticated users trying to access public/auth routes to dashboard
+  // Redirect authenticated users trying to access public/auth routes
   if (isAuthenticated && isPublicRoute) {
+    // If there's a callback URL, use that instead of the default redirect
+    const callbackUrl = searchParams.get("callbackUrl");
+    if (callbackUrl) {
+      return NextResponse.redirect(new URL(callbackUrl, request.url));
+    }
+    // Otherwise redirect to dashboard
     return NextResponse.redirect(new URL(DEFAULT_LOGIN_REDIRECT, request.url));
   }
 
