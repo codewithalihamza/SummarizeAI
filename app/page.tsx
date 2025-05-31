@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center p-24 pt-20 bg-black text-white overflow-hidden">
       {/* Animated background elements */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4F6BFF10_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF10_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="absolute bg-[linear-gradient(to_right,#4F6BFF10_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF10_1px,transparent_1px)] bg-[size:24px_24px]" />
       <div className="absolute top-0 -left-48 h-96 w-96 bg-[#4F6BFF]/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 -right-48 h-96 w-96 bg-[#4F6BFF]/20 rounded-full blur-3xl animate-pulse delay-700" />
 

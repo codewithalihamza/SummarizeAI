@@ -45,13 +45,13 @@ export default function SignIn() {
   return (
     <main className="min-h-screen bg-black text-white flex items-center justify-center p-4">
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#4F6BFF10_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF10_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="absolute bg-[linear-gradient(to_right,#4F6BFF10_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF10_1px,transparent_1px)] bg-[size:24px_24px]" />
       <div className="absolute top-0 -left-48 h-96 w-96 bg-[#4F6BFF]/20 rounded-full blur-3xl animate-pulse" />
       <div className="absolute bottom-0 -right-48 h-96 w-96 bg-[#4F6BFF]/20 rounded-full blur-3xl animate-pulse delay-700" />
 
       {/* Sign In Container */}
       <div className="relative w-full max-w-md">
-        <div className="absolute inset-0 bg-gradient-to-r from-[#4F6BFF]/30 to-[#6B7FFF]/30 rounded-2xl blur-xl" />
+        <div className="absolute bg-gradient-to-r from-[#4F6BFF]/30 to-[#6B7FFF]/30 rounded-2xl blur-xl" />
         <div className="relative bg-black/40 backdrop-blur-xl rounded-2xl border border-[#4F6BFF]/20 p-8 shadow-xl">
           {/* Header */}
           <div className="text-center mb-8">

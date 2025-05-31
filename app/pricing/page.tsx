@@ -52,7 +52,7 @@ export default function Pricing() {
   return (
     <div className="relative min-h-screen bg-black text-white pt-24 pb-8 px-8">
       {/* Background Effects */}
-      <div className="fixed inset-0 bg-[linear-gradient(to_right,#4F6BFF10_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF10_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="fixed bg-[linear-gradient(to_right,#4F6BFF10_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF10_1px,transparent_1px)] bg-[size:24px_24px]" />
       <div className="fixed top-0 -left-48 h-96 w-96 bg-[#4F6BFF]/20 rounded-full blur-3xl animate-pulse" />
       <div className="fixed bottom-0 -right-48 h-96 w-96 bg-[#4F6BFF]/20 rounded-full blur-3xl animate-pulse delay-700" />
 
@@ -72,11 +72,10 @@ export default function Pricing() {
           {pricingPlans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-2xl p-8 ${
-                plan.popular
-                  ? "border-2 border-[#4F6BFF]"
-                  : "border border-[#4F6BFF]/20"
-              } bg-black/40 backdrop-blur-xl`}
+              className={`relative rounded-2xl p-8 ${plan.popular
+                ? "border-2 border-[#4F6BFF]"
+                : "border border-[#4F6BFF]/20"
+                } bg-black/40 backdrop-blur-xl`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -103,11 +102,10 @@ export default function Pricing() {
               </ul>
 
               <Button
-                className={`w-full ${
-                  plan.popular
-                    ? "bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
-                    : "bg-white/10 hover:bg-white/20"
-                } transition-colors duration-300`}
+                className={`w-full ${plan.popular
+                  ? "bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
+                  : "bg-white/10 hover:bg-white/20"
+                  } transition-colors duration-300`}
               >
                 Get Started
               </Button>
