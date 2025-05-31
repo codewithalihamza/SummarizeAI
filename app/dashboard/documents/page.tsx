@@ -4,7 +4,7 @@ import { getUserPdfSummaries } from "@/app/actions/pdf";
 import { DocumentSkeleton } from "@/components/loading/document-skeleton";
 import { Button } from "@/components/ui/button";
 import { PRIVATE_ROUTES } from "@/constants/routes";
-import { getStatusColor, getStatusText } from "@/lib/schema/pdf";
+import { getStatusText } from "@/lib/schema/pdf";
 import type { PdfSummary } from "@/lib/services/pdf";
 import { cookies } from "@/lib/session/userSession";
 import {
@@ -18,6 +18,19 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+
+const getStatusColor = (status: "completed" | "failed" | "pending") => {
+  switch (status) {
+    case "completed":
+      return "bg-green-500/10 text-green-500";
+    case "pending":
+      return "bg-yellow-500/10 text-yellow-500";
+    case "failed":
+      return "bg-red-500/10 text-red-500";
+    default:
+      return "bg-gray-500/10 text-gray-500";
+  }
+};
 
 export default function Documents() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -99,21 +112,19 @@ export default function Documents() {
         <div className="flex gap-2">
           <div className="flex rounded-lg border border-[#4F6BFF]/20 overflow-hidden">
             <button
-              className={`p-2 ${
-                viewMode === "grid"
-                  ? "bg-[#4F6BFF] text-white"
-                  : "hover:bg-[#4F6BFF]/10"
-              }`}
+              className={`p-2 ${viewMode === "grid"
+                ? "bg-[#4F6BFF] text-white"
+                : "hover:bg-[#4F6BFF]/10"
+                }`}
               onClick={() => setViewMode("grid")}
             >
               <Grid className="h-5 w-5" />
             </button>
             <button
-              className={`p-2 ${
-                viewMode === "list"
-                  ? "bg-[#4F6BFF] text-white"
-                  : "hover:bg-[#4F6BFF]/10"
-              }`}
+              className={`p-2 ${viewMode === "list"
+                ? "bg-[#4F6BFF] text-white"
+                : "hover:bg-[#4F6BFF]/10"
+                }`}
               onClick={() => setViewMode("list")}
             >
               <List className="h-5 w-5" />
