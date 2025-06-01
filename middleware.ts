@@ -16,7 +16,9 @@ export async function middleware(request: NextRequest) {
 
   // Check if the user is authenticated
   const isAuthenticated = token && (await verifyToken(token));
-  const isPrivateRoute = Object.values(PRIVATE_ROUTES).includes(pathname as any);
+  const isPrivateRoute = Object.values(PRIVATE_ROUTES).includes(
+    pathname as any,
+  );
   const isPublicRoute = Object.values(PUBLIC_ROUTES).includes(pathname as any);
 
   // Redirect authenticated users trying to access public/auth routes

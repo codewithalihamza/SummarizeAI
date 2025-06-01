@@ -112,19 +112,21 @@ export default function Documents() {
         <div className="flex gap-2">
           <div className="flex rounded-lg border border-[#4F6BFF]/20 overflow-hidden">
             <button
-              className={`p-2 ${viewMode === "grid"
-                ? "bg-[#4F6BFF] text-white"
-                : "hover:bg-[#4F6BFF]/10"
-                }`}
+              className={`p-2 ${
+                viewMode === "grid"
+                  ? "bg-[#4F6BFF] text-white"
+                  : "hover:bg-[#4F6BFF]/10"
+              }`}
               onClick={() => setViewMode("grid")}
             >
               <Grid className="h-5 w-5" />
             </button>
             <button
-              className={`p-2 ${viewMode === "list"
-                ? "bg-[#4F6BFF] text-white"
-                : "hover:bg-[#4F6BFF]/10"
-                }`}
+              className={`p-2 ${
+                viewMode === "list"
+                  ? "bg-[#4F6BFF] text-white"
+                  : "hover:bg-[#4F6BFF]/10"
+              }`}
               onClick={() => setViewMode("list")}
             >
               <List className="h-5 w-5" />

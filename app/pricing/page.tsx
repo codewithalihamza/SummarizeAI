@@ -72,10 +72,11 @@ export default function Pricing() {
           {pricingPlans.map((plan) => (
             <div
               key={plan.name}
-              className={`relative rounded-2xl p-8 ${plan.popular
-                ? "border-2 border-[#4F6BFF]"
-                : "border border-[#4F6BFF]/20"
-                } bg-black/40 backdrop-blur-xl`}
+              className={`relative rounded-2xl p-8 ${
+                plan.popular
+                  ? "border-2 border-[#4F6BFF]"
+                  : "border border-[#4F6BFF]/20"
+              } bg-black/40 backdrop-blur-xl`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -102,10 +103,11 @@ export default function Pricing() {
               </ul>
 
               <Button
-                className={`w-full ${plan.popular
-                  ? "bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
-                  : "bg-white/10 hover:bg-white/20"
-                  } transition-colors duration-300`}
+                className={`w-full ${
+                  plan.popular
+                    ? "bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
+                    : "bg-white/10 hover:bg-white/20"
+                } transition-colors duration-300`}
               >
                 Get Started
               </Button>

@@ -24,7 +24,10 @@ export class AuthService {
         .where(eq(users.email, data.email));
 
       if (existingUser) {
-        return { success: false, error: "Email already exists. Please sign in instead." };
+        return {
+          success: false,
+          error: "Email already exists. Please sign in instead.",
+        };
       }
 
       // Hash password
