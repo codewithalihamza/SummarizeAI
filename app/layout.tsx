@@ -1,9 +1,9 @@
 import { Toaster } from "@/components/providers/toaster";
+import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
 import { Source_Sans_3 as Font } from "next/font/google";
 import "./globals.css";
-
 const Header = dynamic(() => import("@/components/header/header"), {
   ssr: true,
 });
@@ -32,6 +32,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        <Analytics />
         <Toaster />
       </body>
     </html>
