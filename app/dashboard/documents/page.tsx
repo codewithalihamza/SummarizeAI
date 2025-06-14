@@ -78,6 +78,10 @@ export default function Documents() {
     }).format(new Date(date));
   };
 
+  const handleDocumentClick = (documentId: string) => {
+    router.push(PRIVATE_ROUTES.DOCUMENT_DETAIL(documentId));
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -112,21 +116,19 @@ export default function Documents() {
         <div className="flex gap-2">
           <div className="flex rounded-lg border border-[#4F6BFF]/20 overflow-hidden">
             <button
-              className={`p-2 ${
-                viewMode === "grid"
-                  ? "bg-[#4F6BFF] text-white"
-                  : "hover:bg-[#4F6BFF]/10"
-              }`}
+              className={`p-2 ${viewMode === "grid"
+                ? "bg-[#4F6BFF] text-white"
+                : "hover:bg-[#4F6BFF]/10"
+                }`}
               onClick={() => setViewMode("grid")}
             >
               <Grid className="h-5 w-5" />
             </button>
             <button
-              className={`p-2 ${
-                viewMode === "list"
-                  ? "bg-[#4F6BFF] text-white"
-                  : "hover:bg-[#4F6BFF]/10"
-              }`}
+              className={`p-2 ${viewMode === "list"
+                ? "bg-[#4F6BFF] text-white"
+                : "hover:bg-[#4F6BFF]/10"
+                }`}
               onClick={() => setViewMode("list")}
             >
               <List className="h-5 w-5" />
@@ -162,13 +164,20 @@ export default function Documents() {
                 {filteredDocuments.map((doc) => (
                   <div
                     key={doc.id}
-                    className="bg-black/40 backdrop-blur-xl rounded-2xl border border-[#4F6BFF]/20 p-6 hover:border-[#4F6BFF]/40 transition-colors"
+                    className="bg-black/40 backdrop-blur-xl rounded-2xl border border-[#4F6BFF]/20 p-6 hover:border-[#4F6BFF]/40 transition-colors cursor-pointer"
+                    onClick={() => handleDocumentClick(doc.id)}
                   >
                     <div className="flex items-start justify-between">
                       <div className="bg-[#4F6BFF]/10 p-3 rounded-lg">
                         <FileText className="h-8 w-8 text-[#4F6BFF]" />
                       </div>
-                      <button className="p-1 hover:bg-[#4F6BFF]/10 rounded-lg transition-colors">
+                      <button
+                        className="p-1 hover:bg-[#4F6BFF]/10 rounded-lg transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // Add more actions here if needed
+                        }}
+                      >
                         <MoreVertical className="h-5 w-5" />
                       </button>
                     </div>
@@ -203,7 +212,11 @@ export default function Documents() {
                   </thead>
                   <tbody>
                     {filteredDocuments.map((doc) => (
-                      <tr key={doc.id} className="border-b border-[#4F6BFF]/10">
+                      <tr
+                        key={doc.id}
+                        className="border-b border-[#4F6BFF]/10 hover:bg-[#4F6BFF]/5 cursor-pointer"
+                        onClick={() => handleDocumentClick(doc.id)}
+                      >
                         <td className="p-4">
                           <div className="flex items-center">
                             <FileText className="h-5 w-5 text-[#4F6BFF] mr-2" />
@@ -226,9 +239,10 @@ export default function Documents() {
                               variant="outline"
                               size="sm"
                               className="bg-[white] text-[#4F6BFF]"
-                              onClick={() =>
-                                window.open(doc.originalFileUrl, "_blank")
-                              }
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(doc.originalFileUrl, "_blank");
+                              }}
                             >
                               View PDF
                             </Button>
@@ -236,6 +250,10 @@ export default function Documents() {
                               variant="outline"
                               size="sm"
                               className="bg-[green] text-white"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDocumentClick(doc.id);
+                              }}
                             >
                               View Summary
                             </Button>

@@ -13,6 +13,7 @@ export const PRIVATE_ROUTES = {
   PROFILE: "/dashboard/profile",
   SETTINGS: "/dashboard/settings",
   DOCUMENTS: "/dashboard/documents",
+  DOCUMENT_DETAIL: (id: string) => `/dashboard/documents/${id}`,
 } as const;
 
 // Default redirect paths
