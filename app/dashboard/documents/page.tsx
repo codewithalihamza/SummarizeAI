@@ -1,13 +1,14 @@
 "use client";
 
-import { getUserPdfSummaries } from "@/app/actions/pdf";
 import { DocumentSkeleton } from "@/components/loading/document-skeleton";
 import { Button } from "@/components/ui/button";
 import { PRIVATE_ROUTES } from "@/constants/routes";
-import { getStatusText } from "@/lib/schema/pdf";
-import type { PdfSummary } from "@/lib/services/pdf";
-import { cookies } from "@/lib/session/userSession";
+import { getStatusColor, getStatusText } from "@/constants/text.constant";
+import { useDocuments, useDocumentSearch } from "@/hooks/document.hook";
+import { formatDate } from "@/lib/utils";
 import {
+  ExternalLink,
+  Eye,
   FileText,
   Grid,
   List,
@@ -16,66 +17,57 @@ import {
   Upload,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-
-const getStatusColor = (status: "completed" | "failed" | "pending") => {
-  switch (status) {
-    case "completed":
-      return "bg-green-500/10 text-green-500";
-    case "pending":
-      return "bg-yellow-500/10 text-yellow-500";
-    case "failed":
-      return "bg-red-500/10 text-red-500";
-    default:
-      return "bg-gray-500/10 text-gray-500";
-  }
-};
+import { useEffect, useRef, useState } from "react";
 
 export default function Documents() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
-  const [documents, setDocuments] = useState<PdfSummary[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const userId = cookies.get("id");
 
+  const { documents, isLoading } = useDocuments();
+  const { filteredDocuments } = useDocumentSearch(documents, searchQuery);
+
+  const handleDocumentClick = (documentId: string) => {
+    router.push(PRIVATE_ROUTES.DOCUMENT_DETAIL(documentId));
+  };
+
+  const toggleDropdown = (docId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpenDropdown(openDropdown === docId ? null : docId);
+  };
+
+  // Close dropdown when clicking outside
   useEffect(() => {
-    const fetchDocuments = async () => {
-      if (!userId) {
-        toast.error("User not authenticated");
-        return;
-      }
-
-      try {
-        const result = await getUserPdfSummaries(userId);
-        if (result.success && result.pdfs) {
-          setDocuments(result.pdfs);
-        } else {
-          toast.error(result.error || "Failed to fetch documents");
-        }
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-        toast.error("Failed to fetch documents");
-      } finally {
-        setIsLoading(false);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(null);
       }
     };
 
-    fetchDocuments();
-  }, [userId]);
+    if (openDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
 
-  const filteredDocuments = documents.filter((doc) =>
-    doc.fileName.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdown]);
 
-  const formatDate = (date: Date | null) => {
-    if (!date) return "Unknown date";
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(new Date(date));
+  const handleViewPdf = (pdfUrl: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpenDropdown(null);
+    window.open(pdfUrl, "_blank");
+  };
+
+  const handleViewSummary = (docId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpenDropdown(null);
+    handleDocumentClick(docId);
   };
 
   return (
@@ -162,21 +154,64 @@ export default function Documents() {
                 {filteredDocuments.map((doc) => (
                   <div
                     key={doc.id}
-                    className="bg-black/40 backdrop-blur-xl rounded-2xl border border-[#4F6BFF]/20 p-6 hover:border-[#4F6BFF]/40 transition-colors"
+                    className="bg-black/40 backdrop-blur-xl rounded-2xl border border-[#4F6BFF]/20 p-6 hover:border-[#4F6BFF]/40 transition-colors relative group cursor-pointer"
+                    onClick={() => handleDocumentClick(doc.id)}
                   >
                     <div className="flex items-start justify-between">
                       <div className="bg-[#4F6BFF]/10 p-3 rounded-lg">
                         <FileText className="h-8 w-8 text-[#4F6BFF]" />
                       </div>
-                      <button className="p-1 hover:bg-[#4F6BFF]/10 rounded-lg transition-colors">
-                        <MoreVertical className="h-5 w-5" />
-                      </button>
+                      <div
+                        className="relative"
+                        ref={openDropdown === doc.id ? dropdownRef : null}
+                      >
+                        <button
+                          className="p-2 hover:bg-[#4F6BFF]/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                          onClick={(e) => toggleDropdown(doc.id, e)}
+                        >
+                          <MoreVertical className="h-4 w-4 text-gray-400" />
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {openDropdown === doc.id && (
+                          <div className="absolute right-0 top-10 bg-black/95 backdrop-blur-xl border border-[#4F6BFF]/30 rounded-xl shadow-2xl z-50 min-w-[160px] py-2">
+                            <button
+                              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#4F6BFF]/20 transition-colors text-sm font-medium"
+                              onClick={(e) =>
+                                handleViewPdf(doc.originalFileUrl, e)
+                              }
+                            >
+                              <ExternalLink className="h-4 w-4 text-[#4F6BFF]" />
+                              <span>View PDF</span>
+                            </button>
+                            <div className="w-full h-px bg-[#4F6BFF]/10 my-1" />
+                            <button
+                              className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#4F6BFF]/20 transition-colors text-sm font-medium"
+                              onClick={(e) => handleViewSummary(doc.id, e)}
+                            >
+                              <Eye className="h-4 w-4 text-[#4F6BFF]" />
+                              <span>View Summary</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
+
                     <div className="mt-4">
-                      <h3 className="font-medium truncate" title={doc.fileName}>
+                      <h3
+                        className="font-medium truncate text-white"
+                        title={doc.fileName}
+                      >
                         {doc.fileName}
                       </h3>
+                      <p
+                        className="text-sm text-gray-400 mt-1 truncate"
+                        title={doc.title}
+                      >
+                        {doc.title}
+                      </p>
                     </div>
+
                     <div className="mt-4 flex items-center justify-between">
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(doc.status)}`}
@@ -203,11 +238,22 @@ export default function Documents() {
                   </thead>
                   <tbody>
                     {filteredDocuments.map((doc) => (
-                      <tr key={doc.id} className="border-b border-[#4F6BFF]/10">
+                      <tr
+                        key={doc.id}
+                        className="border-b border-[#4F6BFF]/10 hover:bg-[#4F6BFF]/5 cursor-pointer"
+                        onClick={() => handleDocumentClick(doc.id)}
+                      >
                         <td className="p-4">
-                          <div className="flex items-center">
-                            <FileText className="h-5 w-5 text-[#4F6BFF] mr-2" />
-                            {doc.fileName}
+                          <div className="flex items-center gap-3">
+                            <div className="bg-[#4F6BFF]/10 p-2 rounded-lg">
+                              <FileText className="h-5 w-5 text-[#4F6BFF]" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{doc.fileName}</p>
+                              <p className="text-sm text-gray-400">
+                                {doc.title}
+                              </p>
+                            </div>
                           </div>
                         </td>
                         <td className="p-4 text-gray-400">
@@ -225,18 +271,25 @@ export default function Documents() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="bg-[white] text-[#4F6BFF]"
-                              onClick={() =>
-                                window.open(doc.originalFileUrl, "_blank")
-                              }
+                              className="bg-[#4F6BFF] text-white hover:bg-[#4F6BFF]/90 border-[#4F6BFF]"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                window.open(doc.originalFileUrl, "_blank");
+                              }}
                             >
+                              <ExternalLink className="h-4 w-4 mr-1" />
                               View PDF
                             </Button>
                             <Button
                               variant="outline"
                               size="sm"
-                              className="bg-[green] text-white"
+                              className="bg-green-600 text-white hover:bg-green-700 border-green-600"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleDocumentClick(doc.id);
+                              }}
                             >
+                              <Eye className="h-4 w-4 mr-1" />
                               View Summary
                             </Button>
                           </div>

@@ -6,6 +6,22 @@ const config: Config = {
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./constants/**/*.{js,ts,jsx,tsx,mdx}",
+    "./hooks/**/*.{js,ts,jsx,tsx,mdx}",
+    "./lib/**/*.{js,ts,jsx,tsx,mdx}",
+    "./types/**/*.{js,ts,jsx,tsx,mdx}",
+    "./views/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  safelist: [
+    // Status color classes for dynamic rendering
+    "bg-green-500/10",
+    "text-green-500",
+    "bg-yellow-500/10",
+    "text-yellow-500",
+    "bg-red-500/10",
+    "text-red-500",
+    "bg-gray-500/10",
+    "text-gray-500",
   ],
   theme: {
     extend: {

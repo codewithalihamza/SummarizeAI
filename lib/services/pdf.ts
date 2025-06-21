@@ -1,13 +1,7 @@
-import { desc, eq } from "drizzle-orm";
+import { UploadPdfData } from "@/types";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { pdfSummaries } from "../schema/pdf";
-
-type UploadPdfData = {
-  userId: string;
-  originalFileUrl: string;
-  fileName: string;
-  title: string;
-};
 
 export type PdfSummary = typeof pdfSummaries.$inferSelect;
 
@@ -44,6 +38,25 @@ export class PdfService {
     } catch (error) {
       console.error("Error fetching PDFs:", error);
       return { success: false, error: "Failed to fetch PDFs" };
+    }
+  }
+
+  static async getPdfSummaryById(id: string, userId: string) {
+    try {
+      const pdf = await db
+        .select()
+        .from(pdfSummaries)
+        .where(and(eq(pdfSummaries.id, id), eq(pdfSummaries.userId, userId)))
+        .then((results: PdfSummary[]) => results[0] || null);
+
+      if (!pdf) {
+        return { success: false, error: "PDF not found" };
+      }
+
+      return { success: true, pdf };
+    } catch (error) {
+      console.error("Error fetching PDF:", error);
+      return { success: false, error: "Failed to fetch PDF" };
     }
   }
 }

@@ -33,3 +33,12 @@ export async function getUserPdfSummaries(userId: string) {
     return { success: false, error: "Failed to fetch PDFs" };
   }
 }
+
+export async function getPdfSummaryById(id: string, userId: string) {
+  try {
+    return await PdfService.getPdfSummaryById(id, userId);
+  } catch (error) {
+    console.error("Error fetching PDF summary:", error);
+    return { success: false, error: "Failed to fetch PDF" };
+  }
+}

@@ -35,16 +35,3 @@ export const FileSchema = z.object({
       "Only PDF files are allowed",
     ),
 });
-
-export const getStatusText = (status: "completed" | "failed" | "pending") => {
-  switch (status) {
-    case "completed":
-      return "Completed";
-    case "pending":
-      return "Pending";
-    case "failed":
-      return "Failed";
-    default:
-      return "Unknown";
-  }
-};
