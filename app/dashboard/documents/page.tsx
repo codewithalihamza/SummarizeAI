@@ -1,12 +1,11 @@
 "use client";
 
-import { getUserPdfSummaries } from "@/app/actions/pdf";
 import { DocumentSkeleton } from "@/components/loading/document-skeleton";
 import { Button } from "@/components/ui/button";
 import { PRIVATE_ROUTES } from "@/constants/routes";
-import { getStatusText } from "@/lib/schema/pdf";
-import type { PdfSummary } from "@/lib/services/pdf";
-import { cookies } from "@/lib/session/userSession";
+import { getStatusColor, getStatusText } from "@/constants/text.constant";
+import { useDocuments, useDocumentSearch } from "@/hooks/document.hook";
+import { formatDate } from "@/lib/utils";
 import {
   FileText,
   Grid,
@@ -16,67 +15,15 @@ import {
   Upload,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
-
-const getStatusColor = (status: "completed" | "failed" | "pending") => {
-  switch (status) {
-    case "completed":
-      return "bg-green-500/10 text-green-500";
-    case "pending":
-      return "bg-yellow-500/10 text-yellow-500";
-    case "failed":
-      return "bg-red-500/10 text-red-500";
-    default:
-      return "bg-gray-500/10 text-gray-500";
-  }
-};
+import { useState } from "react";
 
 export default function Documents() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
-  const [documents, setDocuments] = useState<PdfSummary[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
-  const userId = cookies.get("id");
 
-  useEffect(() => {
-    const fetchDocuments = async () => {
-      if (!userId) {
-        toast.error("User not authenticated");
-        return;
-      }
-
-      try {
-        const result = await getUserPdfSummaries(userId);
-        if (result.success && result.pdfs) {
-          setDocuments(result.pdfs);
-        } else {
-          toast.error(result.error || "Failed to fetch documents");
-        }
-      } catch (error) {
-        console.error("Error fetching documents:", error);
-        toast.error("Failed to fetch documents");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDocuments();
-  }, [userId]);
-
-  const filteredDocuments = documents.filter((doc) =>
-    doc.fileName.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
-
-  const formatDate = (date: Date | null) => {
-    if (!date) return "Unknown date";
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    }).format(new Date(date));
-  };
+  const { documents, isLoading } = useDocuments();
+  const { filteredDocuments } = useDocumentSearch(documents, searchQuery);
 
   const handleDocumentClick = (documentId: string) => {
     router.push(PRIVATE_ROUTES.DOCUMENT_DETAIL(documentId));
@@ -218,9 +165,14 @@ export default function Documents() {
                         onClick={() => handleDocumentClick(doc.id)}
                       >
                         <td className="p-4">
-                          <div className="flex items-center">
-                            <FileText className="h-5 w-5 text-[#4F6BFF] mr-2" />
-                            {doc.fileName}
+                          <div className="flex items-center gap-3">
+                            <div className="bg-[#4F6BFF]/10 p-2 rounded-lg">
+                              <FileText className="h-5 w-5 text-[#4F6BFF]" />
+                            </div>
+                            <div>
+                              <p className="font-medium">{doc.fileName}</p>
+                              <p className="text-sm text-gray-400">{doc.title}</p>
+                            </div>
                           </div>
                         </td>
                         <td className="p-4 text-gray-400">
@@ -238,7 +190,6 @@ export default function Documents() {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="bg-[white] text-[#4F6BFF]"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 window.open(doc.originalFileUrl, "_blank");

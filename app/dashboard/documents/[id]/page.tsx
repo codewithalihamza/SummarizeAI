@@ -1,85 +1,23 @@
 "use client";
 
-import { getPdfSummaryById } from "@/app/actions/pdf";
 import { DocumentDetailSkeleton } from "@/components/loading/document-detail-skeleton";
 import { Button } from "@/components/ui/button";
 import { PRIVATE_ROUTES } from "@/constants/routes";
-import { getStatusText } from "@/lib/schema/pdf";
-import type { PdfSummary } from "@/lib/services/pdf";
-import { cookies } from "@/lib/session/userSession";
+import { getStatusColor, getStatusText } from "@/constants/text.constant";
+import { useDocumentDetail } from "@/hooks/document.hook";
+import { formatDate } from "@/lib/utils";
 import { ArrowLeft, FileText, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { use, useEffect, useState } from "react";
-import { toast } from "sonner";
-
-const getStatusColor = (status: "completed" | "failed" | "pending") => {
-    switch (status) {
-        case "completed":
-            return "bg-green-500/10 text-green-500";
-        case "pending":
-            return "bg-yellow-500/10 text-yellow-500";
-        case "failed":
-            return "bg-red-500/10 text-red-500";
-        default:
-            return "bg-gray-500/10 text-gray-500";
-    }
-};
+import { use } from "react";
 
 export default function DocumentDetail({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
-    const [document, setDocument] = useState<PdfSummary | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
-    const userId = cookies.get("id");
     const { id: documentId } = use(params);
-
-    useEffect(() => {
-        const fetchDocument = async () => {
-            if (!userId) {
-                toast.error("User not authenticated");
-                router.push(PRIVATE_ROUTES.DOCUMENTS);
-                return;
-            }
-
-            if (!documentId) {
-                toast.error("Invalid document ID");
-                router.push(PRIVATE_ROUTES.DOCUMENTS);
-                return;
-            }
-
-            try {
-                const result = await getPdfSummaryById(documentId, userId);
-                if (result.success && result.pdf) {
-                    setDocument(result.pdf);
-                } else {
-                    toast.error(result.error || "Failed to fetch document");
-                    router.push(PRIVATE_ROUTES.DOCUMENTS);
-                }
-            } catch (error) {
-                console.error("Error fetching document:", error);
-                toast.error("Failed to fetch document");
-                router.push(PRIVATE_ROUTES.DOCUMENTS);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchDocument();
-    }, [documentId, userId, router]);
-
-    const formatDate = (date: Date | null) => {
-        if (!date) return "Unknown date";
-        return new Intl.DateTimeFormat("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-        }).format(new Date(date));
-    };
+    const { document, isLoading } = useDocumentDetail(documentId);
 
     if (isLoading) {
         return <DocumentDetailSkeleton />;
