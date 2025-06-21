@@ -15,6 +15,7 @@ interface UseUploadPdfReturn {
   clearSelectedFile: () => void;
   uploadFile: () => Promise<UploadedFile | null>;
   handleFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleFileSelect: (file: File) => void;
 }
 
 export const useUploadPdfHook = (): UseUploadPdfReturn => {
@@ -94,5 +95,6 @@ export const useUploadPdfHook = (): UseUploadPdfReturn => {
     clearSelectedFile,
     uploadFile,
     handleFileChange,
+    handleFileSelect,
   };
 };

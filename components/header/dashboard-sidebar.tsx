@@ -12,13 +12,14 @@ import {
   LayoutDashboard,
   LogOut,
   Menu,
+  MessageSquare,
   Settings,
   User,
   X,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const sidebarItems = [
   {
@@ -30,6 +31,11 @@ const sidebarItems = [
     name: "Documents",
     href: "/dashboard/documents",
     icon: FileText,
+  },
+  {
+    name: "Feedback",
+    href: "/dashboard/feedback",
+    icon: MessageSquare,
   },
 ];
 
@@ -52,15 +58,53 @@ const settingsDropdownItems = [
 ];
 
 export function DashboardSidebar() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Start closed on mobile
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   const isSettingsActive = pathname?.startsWith("/dashboard/settings");
 
+  // Auto-close sidebar on mobile when screen size changes
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        // md breakpoint
+        setIsSidebarOpen(false);
+      }
+    };
+
+    // Set initial state based on screen size
+    handleResize();
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Close sidebar when pathname changes on mobile
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  }, [pathname]);
+
+  // Function to handle menu item clicks on mobile
+  const handleMenuItemClick = () => {
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   return (
     <>
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Mobile Sidebar Toggle */}
       <button
         className="fixed top-4 left-4 z-50 p-2 bg-black/50 backdrop-blur-xl rounded-lg border border-[#4F6BFF]/20 md:hidden"
@@ -99,6 +143,7 @@ export function DashboardSidebar() {
                   <li key={item.name}>
                     <Link
                       href={item.href}
+                      onClick={handleMenuItemClick}
                       className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                         isActive
                           ? "bg-[#4F6BFF] text-white"
@@ -141,6 +186,7 @@ export function DashboardSidebar() {
                         <li key={item.name}>
                           <Link
                             href={item.href}
+                            onClick={handleMenuItemClick}
                             className={`flex items-center px-4 py-2 rounded-lg transition-colors ${
                               isActive
                                 ? "bg-[#4F6BFF]/20 text-white"

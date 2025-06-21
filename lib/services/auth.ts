@@ -63,4 +63,45 @@ export class AuthService {
       return { success: false, error: "Failed to sign in" };
     }
   }
+
+  static async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    try {
+      // Find user
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
+
+      if (!user) {
+        return { success: false, error: "User not found" };
+      }
+
+      // Verify current password
+      const validPassword = await bcrypt.compare(
+        currentPassword,
+        user.password,
+      );
+      if (!validPassword) {
+        return { success: false, error: "Current password is incorrect" };
+      }
+
+      // Hash new password
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+      // Update password
+      await db
+        .update(users)
+        .set({
+          password: hashedNewPassword,
+          updatedAt: new Date(),
+        })
+        .where(eq(users.id, userId));
+
+      return { success: true, message: "Password changed successfully" };
+    } catch (error) {
+      console.error("Change password error:", error);
+      return { success: false, error: "Failed to change password" };
+    }
+  }
 }
