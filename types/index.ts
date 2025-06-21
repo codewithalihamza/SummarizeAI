@@ -11,7 +11,10 @@ export interface UseDocumentsReturn {
   refetch: () => Promise<void>;
 }
 export interface UseExtractPdfTextReturn {
-  handleGenerateSummary: (pdfUrl: string, documentId?: string) => Promise<string | null>;
+  handleGenerateSummary: (
+    pdfUrl: string,
+    documentId?: string,
+  ) => Promise<string | null>;
   isExtracting: boolean;
 }
 

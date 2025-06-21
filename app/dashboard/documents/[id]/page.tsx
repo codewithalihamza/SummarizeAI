@@ -6,7 +6,11 @@ import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 import { SummaryReelComponent } from "@/components/ui/summary-reel";
 import { PRIVATE_ROUTES } from "@/constants/routes";
 import { getStatusColor, getStatusText } from "@/constants/text.constant";
-import { useDocumentDetail, useExtractPdfText, useSummaryReel } from "@/hooks/document.hook";
+import {
+  useDocumentDetail,
+  useExtractPdfText,
+  useSummaryReel,
+} from "@/hooks/document.hook";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, FileText, Play, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -21,7 +25,13 @@ export default function DocumentDetail({
   const { id: documentId } = use(params);
   const { document, isLoading, refetch } = useDocumentDetail(documentId);
   const { handleGenerateSummary, isExtracting } = useExtractPdfText();
-  const { summaryReel, isVisible, isGenerating, generateSummaryReel, hideReel } = useSummaryReel();
+  const {
+    summaryReel,
+    isVisible,
+    isGenerating,
+    generateSummaryReel,
+    hideReel,
+  } = useSummaryReel();
 
   if (isLoading) {
     return <DocumentDetailSkeleton />;
@@ -49,7 +59,10 @@ export default function DocumentDetail({
   }
 
   const handleGenerateAISummary = async () => {
-    const result = await handleGenerateSummary(document.originalFileUrl, documentId);
+    const result = await handleGenerateSummary(
+      document.originalFileUrl,
+      documentId,
+    );
     if (result) {
       await refetch();
     }
@@ -72,7 +85,9 @@ export default function DocumentDetail({
           <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
         </Button>
         <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-bold break-words">{document.fileName}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold break-words">
+            {document.fileName}
+          </h1>
           <p className="text-gray-400 mt-1 text-sm sm:text-base">
             Uploaded on {formatDate(document.createdAt)}
           </p>
@@ -166,7 +181,8 @@ export default function DocumentDetail({
               {document.status === "pending" ? (
                 <div>
                   <p>
-                    There is no summary for this document. Please generate one by clicking the generate summary button.
+                    There is no summary for this document. Please generate one
+                    by clicking the generate summary button.
                   </p>
                 </div>
               ) : (

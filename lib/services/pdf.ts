@@ -63,7 +63,7 @@ export class PdfService {
   static async updatePdfSummary(
     id: string,
     userId: string,
-    data: { summaryText?: string; status?: "pending" | "completed" | "failed" }
+    data: { summaryText?: string; status?: "pending" | "completed" | "failed" },
   ) {
     try {
       const [pdf] = await db

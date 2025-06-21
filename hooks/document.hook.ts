@@ -245,7 +245,7 @@ export function useSummaryReel() {
         setIsGenerating(false);
       }
     },
-    []
+    [],
   );
 
   const showReel = useCallback((reel: SummaryReel) => {
