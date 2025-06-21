@@ -14,7 +14,7 @@ import {
   List,
   MoreVertical,
   Search,
-  Upload
+  Upload,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -41,17 +41,20 @@ export default function Documents() {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setOpenDropdown(null);
       }
     };
 
     if (openDropdown) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openDropdown]);
 
@@ -101,19 +104,21 @@ export default function Documents() {
         <div className="flex gap-2">
           <div className="flex rounded-lg border border-[#4F6BFF]/20 overflow-hidden">
             <button
-              className={`p-2 ${viewMode === "grid"
-                ? "bg-[#4F6BFF] text-white"
-                : "hover:bg-[#4F6BFF]/10"
-                }`}
+              className={`p-2 ${
+                viewMode === "grid"
+                  ? "bg-[#4F6BFF] text-white"
+                  : "hover:bg-[#4F6BFF]/10"
+              }`}
               onClick={() => setViewMode("grid")}
             >
               <Grid className="h-5 w-5" />
             </button>
             <button
-              className={`p-2 ${viewMode === "list"
-                ? "bg-[#4F6BFF] text-white"
-                : "hover:bg-[#4F6BFF]/10"
-                }`}
+              className={`p-2 ${
+                viewMode === "list"
+                  ? "bg-[#4F6BFF] text-white"
+                  : "hover:bg-[#4F6BFF]/10"
+              }`}
               onClick={() => setViewMode("list")}
             >
               <List className="h-5 w-5" />
@@ -156,7 +161,10 @@ export default function Documents() {
                       <div className="bg-[#4F6BFF]/10 p-3 rounded-lg">
                         <FileText className="h-8 w-8 text-[#4F6BFF]" />
                       </div>
-                      <div className="relative" ref={openDropdown === doc.id ? dropdownRef : null}>
+                      <div
+                        className="relative"
+                        ref={openDropdown === doc.id ? dropdownRef : null}
+                      >
                         <button
                           className="p-2 hover:bg-[#4F6BFF]/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                           onClick={(e) => toggleDropdown(doc.id, e)}
@@ -169,7 +177,9 @@ export default function Documents() {
                           <div className="absolute right-0 top-10 bg-black/95 backdrop-blur-xl border border-[#4F6BFF]/30 rounded-xl shadow-2xl z-50 min-w-[160px] py-2">
                             <button
                               className="w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-[#4F6BFF]/20 transition-colors text-sm font-medium"
-                              onClick={(e) => handleViewPdf(doc.originalFileUrl, e)}
+                              onClick={(e) =>
+                                handleViewPdf(doc.originalFileUrl, e)
+                              }
                             >
                               <ExternalLink className="h-4 w-4 text-[#4F6BFF]" />
                               <span>View PDF</span>
@@ -188,10 +198,16 @@ export default function Documents() {
                     </div>
 
                     <div className="mt-4">
-                      <h3 className="font-medium truncate text-white" title={doc.fileName}>
+                      <h3
+                        className="font-medium truncate text-white"
+                        title={doc.fileName}
+                      >
                         {doc.fileName}
                       </h3>
-                      <p className="text-sm text-gray-400 mt-1 truncate" title={doc.title}>
+                      <p
+                        className="text-sm text-gray-400 mt-1 truncate"
+                        title={doc.title}
+                      >
                         {doc.title}
                       </p>
                     </div>
@@ -234,7 +250,9 @@ export default function Documents() {
                             </div>
                             <div>
                               <p className="font-medium">{doc.fileName}</p>
-                              <p className="text-sm text-gray-400">{doc.title}</p>
+                              <p className="text-sm text-gray-400">
+                                {doc.title}
+                              </p>
                             </div>
                           </div>
                         </td>

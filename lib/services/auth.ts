@@ -4,7 +4,6 @@ import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { users } from "../schema/user";
 
-
 export class AuthService {
   static async signUp(data: SignUpData) {
     try {

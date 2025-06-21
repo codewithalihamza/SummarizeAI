@@ -46,12 +46,7 @@ export class PdfService {
       const pdf = await db
         .select()
         .from(pdfSummaries)
-        .where(
-          and(
-            eq(pdfSummaries.id, id),
-            eq(pdfSummaries.userId, userId)
-          )
-        )
+        .where(and(eq(pdfSummaries.id, id), eq(pdfSummaries.userId, userId)))
         .then((results: PdfSummary[]) => results[0] || null);
 
       if (!pdf) {
