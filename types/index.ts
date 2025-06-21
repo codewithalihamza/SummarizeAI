@@ -44,3 +44,10 @@ export type SignInData = {
   email: string;
   password: string;
 };
+
+export interface FeedbackData {
+  name: string;
+  email: string;
+  category: string;
+  description: string;
+}

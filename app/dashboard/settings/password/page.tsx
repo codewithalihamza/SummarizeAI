@@ -140,11 +140,12 @@ export default function ChangePassword() {
                       currentPassword: e.target.value,
                     });
                     if (errors.currentPassword) {
-                      setErrors(prev => ({ ...prev, currentPassword: "" }));
+                      setErrors((prev) => ({ ...prev, currentPassword: "" }));
                     }
                   }}
-                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${errors.currentPassword ? "border-red-500" : ""
-                    }`}
+                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${
+                    errors.currentPassword ? "border-red-500" : ""
+                  }`}
                   placeholder="Enter current password"
                   disabled={isLoading}
                 />
@@ -162,7 +163,9 @@ export default function ChangePassword() {
                 </button>
               </div>
               {errors.currentPassword && (
-                <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.currentPassword}
+                </p>
               )}
             </div>
 
@@ -184,11 +187,12 @@ export default function ChangePassword() {
                       newPassword: e.target.value,
                     });
                     if (errors.newPassword) {
-                      setErrors(prev => ({ ...prev, newPassword: "" }));
+                      setErrors((prev) => ({ ...prev, newPassword: "" }));
                     }
                   }}
-                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${errors.newPassword ? "border-red-500" : ""
-                    }`}
+                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${
+                    errors.newPassword ? "border-red-500" : ""
+                  }`}
                   placeholder="Enter new password"
                   disabled={isLoading}
                 />
@@ -206,7 +210,9 @@ export default function ChangePassword() {
                 </button>
               </div>
               {errors.newPassword && (
-                <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.newPassword}
+                </p>
               )}
             </div>
 
@@ -228,11 +234,12 @@ export default function ChangePassword() {
                       confirmPassword: e.target.value,
                     });
                     if (errors.confirmPassword) {
-                      setErrors(prev => ({ ...prev, confirmPassword: "" }));
+                      setErrors((prev) => ({ ...prev, confirmPassword: "" }));
                     }
                   }}
-                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${errors.confirmPassword ? "border-red-500" : ""
-                    }`}
+                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${
+                    errors.confirmPassword ? "border-red-500" : ""
+                  }`}
                   placeholder="Confirm new password"
                   disabled={isLoading}
                 />
@@ -250,7 +257,9 @@ export default function ChangePassword() {
                 </button>
               </div>
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword}
+                </p>
               )}
             </div>
 
@@ -264,12 +273,18 @@ export default function ChangePassword() {
                   {passwordStrength.map((requirement, index) => (
                     <div key={index} className="flex items-center space-x-2">
                       <CheckCircle
-                        className={`w-4 h-4 ${requirement.passed ? "text-green-400" : "text-gray-500"
-                          }`}
+                        className={`w-4 h-4 ${
+                          requirement.passed
+                            ? "text-green-400"
+                            : "text-gray-500"
+                        }`}
                       />
                       <span
-                        className={`text-xs ${requirement.passed ? "text-green-400" : "text-gray-400"
-                          }`}
+                        className={`text-xs ${
+                          requirement.passed
+                            ? "text-green-400"
+                            : "text-gray-400"
+                        }`}
                       >
                         {requirement.label}
                       </span>

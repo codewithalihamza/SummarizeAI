@@ -1,6 +1,10 @@
 "use server";
 
-import { changePasswordSchema, signInSchema, signUpSchema } from "@/lib/schema/user";
+import {
+  changePasswordSchema,
+  signInSchema,
+  signUpSchema,
+} from "@/lib/schema/user";
 import { AuthService } from "@/lib/services/auth";
 import { z } from "zod";
 
@@ -39,13 +43,15 @@ export async function signOut() {
   return { success: true };
 }
 
-export async function changePassword(data: z.infer<typeof changePasswordSchema> & { userId: string }) {
+export async function changePassword(
+  data: z.infer<typeof changePasswordSchema> & { userId: string },
+) {
   try {
     const validatedData = changePasswordSchema.parse(data);
     const result = await AuthService.changePassword(
       data.userId,
       validatedData.currentPassword,
-      validatedData.newPassword
+      validatedData.newPassword,
     );
     return result;
   } catch (error) {

@@ -64,20 +64,24 @@ export class AuthService {
     }
   }
 
-  static async changePassword(userId: string, currentPassword: string, newPassword: string) {
+  static async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
     try {
       // Find user
-      const [user] = await db
-        .select()
-        .from(users)
-        .where(eq(users.id, userId));
+      const [user] = await db.select().from(users).where(eq(users.id, userId));
 
       if (!user) {
         return { success: false, error: "User not found" };
       }
 
       // Verify current password
-      const validPassword = await bcrypt.compare(currentPassword, user.password);
+      const validPassword = await bcrypt.compare(
+        currentPassword,
+        user.password,
+      );
       if (!validPassword) {
         return { success: false, error: "Current password is incorrect" };
       }
@@ -90,7 +94,7 @@ export class AuthService {
         .update(users)
         .set({
           password: hashedNewPassword,
-          updatedAt: new Date()
+          updatedAt: new Date(),
         })
         .where(eq(users.id, userId));
 
