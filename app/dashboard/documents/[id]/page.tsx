@@ -7,9 +7,9 @@ import { PRIVATE_ROUTES } from "@/constants/routes";
 import { getStatusText } from "@/lib/schema/pdf";
 import type { PdfSummary } from "@/lib/services/pdf";
 import { cookies } from "@/lib/session/userSession";
-import { ArrowLeft, Download, FileText } from "lucide-react";
+import { ArrowLeft, FileText, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 const getStatusColor = (status: "completed" | "failed" | "pending") => {
@@ -28,13 +28,13 @@ const getStatusColor = (status: "completed" | "failed" | "pending") => {
 export default function DocumentDetail({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
     const [document, setDocument] = useState<PdfSummary | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const router = useRouter();
     const userId = cookies.get("id");
-    const documentId = params?.id;
+    const { id: documentId } = use(params);
 
     useEffect(() => {
         const fetchDocument = async () => {
@@ -114,7 +114,7 @@ export default function DocumentDetail({
                     onClick={() => router.push(PRIVATE_ROUTES.DOCUMENTS)}
                     className="h-10 w-10"
                 >
-                    <ArrowLeft className="h-5 w-5" />
+                    <ArrowLeft className="h-5 w-5 text-white" />
                 </Button>
                 <div>
                     <h1 className="text-3xl font-bold">{document.fileName}</h1>
@@ -157,20 +157,22 @@ export default function DocumentDetail({
 
                     <div>
                         <h2 className="text-xl font-semibold mb-4">Actions</h2>
-                        <div className="space-y-4">
+                        <div className="flex gap-5 items-center">
                             <Button
-                                className="w-full bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
+                                className="bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
                                 onClick={() => window.open(document.originalFileUrl, "_blank")}
                             >
                                 <FileText className="h-5 w-5 mr-2" />
                                 View Original PDF
                             </Button>
                             <Button
-                                className="w-full bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
-                                onClick={() => window.open(document.originalFileUrl, "_blank")}
+                                className="bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
+                                onClick={() => {
+                                    console.log("Generating summary");
+                                }}
                             >
-                                <Download className="h-5 w-5 mr-2" />
-                                Download PDF
+                                <Sparkles className="h-5 w-5 mr-2" />
+                                Generate Summary
                             </Button>
                         </div>
                     </div>
