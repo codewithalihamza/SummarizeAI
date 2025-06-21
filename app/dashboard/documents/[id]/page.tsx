@@ -32,7 +32,6 @@ export default function DocumentDetail({
     generateSummaryReel,
     hideReel,
   } = useSummaryReel();
-
   if (isLoading) {
     return <DocumentDetailSkeleton />;
   }
