@@ -2,21 +2,10 @@ import { getPdfSummaryById, getUserPdfSummaries } from "@/app/actions/pdf";
 import { PRIVATE_ROUTES } from "@/constants/routes";
 import type { PdfSummary } from "@/lib/services/pdf";
 import { cookies } from "@/lib/session/userSession";
+import { UseDocumentDetailReturn, UseDocumentsReturn, UseExtractPdfTextReturn } from "@/types";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-
-interface UseDocumentDetailReturn {
-    document: PdfSummary | null;
-    isLoading: boolean;
-    refetch: () => Promise<void>;
-}
-
-interface UseDocumentsReturn {
-    documents: PdfSummary[];
-    isLoading: boolean;
-    refetch: () => Promise<void>;
-}
 
 /**
  * Hook to manage fetching a single document by ID
@@ -115,6 +104,59 @@ export function useDocuments(): UseDocumentsReturn {
         documents,
         isLoading,
         refetch: fetchDocuments,
+    };
+}
+
+/**
+ * Hook to manage PDF text extraction
+ */
+export function useExtractPdfText(): UseExtractPdfTextReturn {
+    const [isExtracting, setIsExtracting] = useState(false);
+
+    const handleGenerateSummary = useCallback(async (pdfUrl: string): Promise<string | null> => {
+        if (!pdfUrl) {
+            toast.error("No PDF file URL available");
+            return null;
+        }
+
+        try {
+            setIsExtracting(true);
+            toast.info("Extracting text from PDF...");
+
+            const response = await fetch("/api/extract-pdf-text", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    pdfUrl: pdfUrl,
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                console.log("Extracted PDF text:", result.text);
+                console.log("Text length:", result.length, "characters");
+                toast.success("PDF text extracted successfully!");
+                return result.text;
+            } else {
+                console.error("API error:", result.error);
+                toast.error(result.error || "Failed to extract text from PDF");
+                return null;
+            }
+        } catch (error) {
+            console.error("Error calling PDF extraction API:", error);
+            toast.error("Failed to extract text from PDF");
+            return null;
+        } finally {
+            setIsExtracting(false);
+        }
+    }, []);
+
+    return {
+        handleGenerateSummary,
+        isExtracting,
     };
 }
 

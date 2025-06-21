@@ -7,8 +7,21 @@ import { PDFLoader } from "@langchain/community/document_loaders/fs/pdf";
  */
 export async function extractPdfText(pdfUrl: string): Promise<string> {
     try {
-        // Create a PDFLoader instance with the PDF URL
-        const loader = new PDFLoader(pdfUrl, {
+        // Fetch the PDF file from the URL
+        const response = await fetch(pdfUrl);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
+        }
+
+        // Get the PDF as an ArrayBuffer
+        const pdfBuffer = await response.arrayBuffer();
+
+        // Convert ArrayBuffer to Blob
+        const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+
+        // Create a PDFLoader instance with the PDF Blob
+        const loader = new PDFLoader(pdfBlob, {
             // Split pages for better text extraction
             splitPages: false,
         });
@@ -44,8 +57,21 @@ export async function extractPdfTextByPages(
     pdfUrl: string
 ): Promise<Array<{ pageNumber: number; content: string }>> {
     try {
+        // Fetch the PDF file from the URL
+        const response = await fetch(pdfUrl);
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`);
+        }
+
+        // Get the PDF as an ArrayBuffer
+        const pdfBuffer = await response.arrayBuffer();
+
+        // Convert ArrayBuffer to Blob
+        const pdfBlob = new Blob([pdfBuffer], { type: 'application/pdf' });
+
         // Create a PDFLoader instance with page splitting enabled
-        const loader = new PDFLoader(pdfUrl, {
+        const loader = new PDFLoader(pdfBlob, {
             splitPages: true,
         });
 

@@ -1,18 +1,9 @@
+import { SignInData, SignUpData } from "@/types";
 import bcrypt from "bcryptjs";
 import { eq } from "drizzle-orm";
 import { db } from "../db";
 import { users } from "../schema/user";
 
-export type SignUpData = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-export type SignInData = {
-  email: string;
-  password: string;
-};
 
 export class AuthService {
   static async signUp(data: SignUpData) {

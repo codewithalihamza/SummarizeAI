@@ -1,13 +1,7 @@
+import { UploadPdfData } from "@/types";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "../db";
 import { pdfSummaries } from "../schema/pdf";
-
-type UploadPdfData = {
-  userId: string;
-  originalFileUrl: string;
-  fileName: string;
-  title: string;
-};
 
 export type PdfSummary = typeof pdfSummaries.$inferSelect;
 

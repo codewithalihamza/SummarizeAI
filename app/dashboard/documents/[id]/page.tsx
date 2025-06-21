@@ -4,7 +4,7 @@ import { DocumentDetailSkeleton } from "@/components/loading/document-detail-ske
 import { Button } from "@/components/ui/button";
 import { PRIVATE_ROUTES } from "@/constants/routes";
 import { getStatusColor, getStatusText } from "@/constants/text.constant";
-import { useDocumentDetail } from "@/hooks/document.hook";
+import { useDocumentDetail, useExtractPdfText } from "@/hooks/document.hook";
 import { formatDate } from "@/lib/utils";
 import { ArrowLeft, FileText, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,7 @@ export default function DocumentDetail({
     const router = useRouter();
     const { id: documentId } = use(params);
     const { document, isLoading } = useDocumentDetail(documentId);
+    const { handleGenerateSummary, isExtracting } = useExtractPdfText();
 
     if (isLoading) {
         return <DocumentDetailSkeleton />;
@@ -105,12 +106,11 @@ export default function DocumentDetail({
                             </Button>
                             <Button
                                 className="bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
-                                onClick={() => {
-                                    console.log("Generating summary");
-                                }}
+                                onClick={() => handleGenerateSummary(document.originalFileUrl)}
+                                disabled={isExtracting}
                             >
                                 <Sparkles className="h-5 w-5 mr-2" />
-                                Generate Summary
+                                {isExtracting ? "Extracting..." : "Generate Summary"}
                             </Button>
                         </div>
                     </div>
