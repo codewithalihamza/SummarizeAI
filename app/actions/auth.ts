@@ -1,6 +1,6 @@
 "use server";
 
-import { signInSchema, signUpSchema } from "@/lib/schema/user";
+import { changePasswordSchema, signInSchema, signUpSchema } from "@/lib/schema/user";
 import { AuthService } from "@/lib/services/auth";
 import { z } from "zod";
 
@@ -37,4 +37,22 @@ export async function signUp(data: z.infer<typeof signUpSchema>) {
 export async function signOut() {
   "use server";
   return { success: true };
+}
+
+export async function changePassword(data: z.infer<typeof changePasswordSchema> & { userId: string }) {
+  try {
+    const validatedData = changePasswordSchema.parse(data);
+    const result = await AuthService.changePassword(
+      data.userId,
+      validatedData.currentPassword,
+      validatedData.newPassword
+    );
+    return result;
+  } catch (error) {
+    console.error("Change password error:", error);
+    if (error instanceof z.ZodError) {
+      return { success: false, error: error.errors[0].message };
+    }
+    return { success: false, error: "Failed to change password" };
+  }
 }

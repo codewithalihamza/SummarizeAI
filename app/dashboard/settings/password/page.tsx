@@ -1,9 +1,14 @@
 "use client";
 
+import { changePassword } from "@/app/actions/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Eye, EyeOff, Key } from "lucide-react";
+import { changePasswordSchema } from "@/lib/schema/user";
+import { cookies } from "@/lib/session/userSession";
+import { CheckCircle, Eye, EyeOff, Key, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export default function ChangePassword() {
   const [passwordData, setPasswordData] = useState({
@@ -18,14 +23,67 @@ export default function ChangePassword() {
     confirm: false,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const userId = cookies.get("id");
+
+  const validateForm = () => {
+    try {
+      changePasswordSchema.parse(passwordData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            fieldErrors[err.path[0] as string] = err.message;
+          }
+        });
+        setErrors(fieldErrors);
+      }
+      return false;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("New passwords don't match!");
+
+    if (!userId) {
+      toast.error("User session not found. Please log in again.");
       return;
     }
-    // Handle password change
-    console.log("Password change requested");
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+    setErrors({});
+
+    try {
+      const result = await changePassword({
+        ...passwordData,
+        userId,
+      });
+
+      if (result.success) {
+        toast.success("Password changed successfully!");
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+      } else {
+        toast.error(result.error || "Failed to change password");
+      }
+    } catch (error) {
+      console.error("Password change error:", error);
+      toast.error("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const togglePasswordVisibility = (field: "current" | "new" | "confirm") => {
@@ -34,6 +92,23 @@ export default function ChangePassword() {
       [field]: !prev[field],
     }));
   };
+
+  const getPasswordStrength = (password: string) => {
+    const requirements = [
+      { test: /.{8,}/, label: "At least 8 characters" },
+      { test: /[A-Z]/, label: "One uppercase letter" },
+      { test: /[a-z]/, label: "One lowercase letter" },
+      { test: /\d/, label: "One number" },
+      { test: /[@$!%*?&]/, label: "One special character" },
+    ];
+
+    return requirements.map((req) => ({
+      ...req,
+      passed: req.test.test(password),
+    }));
+  };
+
+  const passwordStrength = getPasswordStrength(passwordData.newPassword);
 
   return (
     <div className="space-y-8">
@@ -59,19 +134,25 @@ export default function ChangePassword() {
                 <Input
                   type={showPasswords.current ? "text" : "password"}
                   value={passwordData.currentPassword}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setPasswordData({
                       ...passwordData,
                       currentPassword: e.target.value,
-                    })
-                  }
-                  className="pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30"
+                    });
+                    if (errors.currentPassword) {
+                      setErrors(prev => ({ ...prev, currentPassword: "" }));
+                    }
+                  }}
+                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${errors.currentPassword ? "border-red-500" : ""
+                    }`}
                   placeholder="Enter current password"
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility("current")}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  disabled={isLoading}
                 >
                   {showPasswords.current ? (
                     <EyeOff className="h-5 w-5 text-gray-400" />
@@ -80,6 +161,9 @@ export default function ChangePassword() {
                   )}
                 </button>
               </div>
+              {errors.currentPassword && (
+                <p className="text-red-500 text-sm mt-1">{errors.currentPassword}</p>
+              )}
             </div>
 
             {/* New Password */}
@@ -94,19 +178,25 @@ export default function ChangePassword() {
                 <Input
                   type={showPasswords.new ? "text" : "password"}
                   value={passwordData.newPassword}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setPasswordData({
                       ...passwordData,
                       newPassword: e.target.value,
-                    })
-                  }
-                  className="pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30"
+                    });
+                    if (errors.newPassword) {
+                      setErrors(prev => ({ ...prev, newPassword: "" }));
+                    }
+                  }}
+                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${errors.newPassword ? "border-red-500" : ""
+                    }`}
                   placeholder="Enter new password"
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility("new")}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  disabled={isLoading}
                 >
                   {showPasswords.new ? (
                     <EyeOff className="h-5 w-5 text-gray-400" />
@@ -115,6 +205,9 @@ export default function ChangePassword() {
                   )}
                 </button>
               </div>
+              {errors.newPassword && (
+                <p className="text-red-500 text-sm mt-1">{errors.newPassword}</p>
+              )}
             </div>
 
             {/* Confirm New Password */}
@@ -129,19 +222,25 @@ export default function ChangePassword() {
                 <Input
                   type={showPasswords.confirm ? "text" : "password"}
                   value={passwordData.confirmPassword}
-                  onChange={(e) =>
+                  onChange={(e) => {
                     setPasswordData({
                       ...passwordData,
                       confirmPassword: e.target.value,
-                    })
-                  }
-                  className="pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30"
+                    });
+                    if (errors.confirmPassword) {
+                      setErrors(prev => ({ ...prev, confirmPassword: "" }));
+                    }
+                  }}
+                  className={`pl-10 pr-10 bg-black/50 border-[#4F6BFF]/30 ${errors.confirmPassword ? "border-red-500" : ""
+                    }`}
                   placeholder="Confirm new password"
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => togglePasswordVisibility("confirm")}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  disabled={isLoading}
                 >
                   {showPasswords.confirm ? (
                     <EyeOff className="h-5 w-5 text-gray-400" />
@@ -150,29 +249,51 @@ export default function ChangePassword() {
                   )}
                 </button>
               </div>
+              {errors.confirmPassword && (
+                <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
+              )}
             </div>
 
             {/* Password Requirements */}
-            <div className="rounded-lg bg-black/30 p-4 border border-[#4F6BFF]/10">
-              <h4 className="text-sm font-medium text-gray-300 mb-2">
-                Password Requirements:
-              </h4>
-              <ul className="text-xs text-gray-400 space-y-1">
-                <li>• Minimum 8 characters long</li>
-                <li>• At least one uppercase letter</li>
-                <li>• At least one lowercase letter</li>
-                <li>• At least one number</li>
-                <li>• At least one special character</li>
-              </ul>
-            </div>
+            {passwordData.newPassword && (
+              <div className="rounded-lg bg-black/30 p-4 border border-[#4F6BFF]/10">
+                <h4 className="text-sm font-medium text-gray-300 mb-3">
+                  Password Requirements:
+                </h4>
+                <div className="space-y-2">
+                  {passwordStrength.map((requirement, index) => (
+                    <div key={index} className="flex items-center space-x-2">
+                      <CheckCircle
+                        className={`w-4 h-4 ${requirement.passed ? "text-green-400" : "text-gray-500"
+                          }`}
+                      />
+                      <span
+                        className={`text-xs ${requirement.passed ? "text-green-400" : "text-gray-400"
+                          }`}
+                      >
+                        {requirement.label}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Submit Button */}
             <div className="pt-4">
               <Button
                 type="submit"
-                className="w-full bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
+                className="w-full bg-[#4F6BFF] hover:bg-[#4F6BFF]/90 disabled:opacity-50"
+                disabled={isLoading}
               >
-                Update Password
+                {isLoading ? (
+                  <div className="flex items-center">
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Updating Password...
+                  </div>
+                ) : (
+                  "Update Password"
+                )}
               </Button>
             </div>
           </form>
