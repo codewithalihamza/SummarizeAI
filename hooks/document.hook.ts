@@ -3,6 +3,7 @@ import { PRIVATE_ROUTES } from "@/constants/routes";
 import type { PdfSummary } from "@/lib/services/pdf";
 import { cookies } from "@/lib/session/userSession";
 import {
+  SummaryReel,
   UseDocumentDetailReturn,
   UseDocumentsReturn,
   UseExtractPdfTextReturn,
@@ -76,7 +77,6 @@ export function useDocuments(): UseDocumentsReturn {
 
   const fetchDocuments = useCallback(async () => {
     if (!userId) {
-      const errorMsg = "User not authenticated";
       setIsLoading(false);
       return;
     }
@@ -112,47 +112,60 @@ export function useDocuments(): UseDocumentsReturn {
 }
 
 /**
- * Hook to manage PDF text extraction
+ * Hook to manage AI-powered PDF summary generation
  */
 export function useExtractPdfText(): UseExtractPdfTextReturn {
   const [isExtracting, setIsExtracting] = useState(false);
 
   const handleGenerateSummary = useCallback(
-    async (pdfUrl: string): Promise<string | null> => {
+    async (pdfUrl: string, documentId?: string): Promise<string | null> => {
       if (!pdfUrl) {
         toast.error("No PDF file URL available");
         return null;
       }
 
+      if (!documentId) {
+        toast.error("Document ID is required for AI summary generation");
+        return null;
+      }
+
+      const userId = cookies.get("id");
+      if (!userId) {
+        toast.error("User not authenticated");
+        return null;
+      }
+
       try {
         setIsExtracting(true);
-        toast.info("Extracting text from PDF...");
+        toast.info("🧠 Generating AI-powered summary...");
 
-        const response = await fetch("/api/extract-pdf-text", {
+        const response = await fetch("/api/generate-summary", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             pdfUrl: pdfUrl,
+            documentId: documentId,
+            userId: userId,
+            isReel: false,
           }),
         });
 
         const result = await response.json();
 
         if (result.success) {
-          console.log("Extracted PDF text:", result.text);
-          console.log("Text length:", result.length, "characters");
-          toast.success("PDF text extracted successfully!");
-          return result.text;
+          console.log("AI Summary generated:", result.summary);
+          toast.success("🎉 AI summary generated successfully!");
+          return result.summary;
         } else {
           console.error("API error:", result.error);
-          toast.error(result.error || "Failed to extract text from PDF");
+          toast.error(result.error || "Failed to generate AI summary");
           return null;
         }
       } catch (error) {
-        console.error("Error calling PDF extraction API:", error);
-        toast.error("Failed to extract text from PDF");
+        console.error("Error calling AI summary generation API:", error);
+        toast.error("Failed to generate AI summary");
         return null;
       } finally {
         setIsExtracting(false);
@@ -181,4 +194,82 @@ export function useDocumentSearch(
   );
 
   return { filteredDocuments };
+}
+
+/**
+ * Hook to manage summary reel display and functionality
+ */
+export function useSummaryReel() {
+  const [summaryReel, setSummaryReel] = useState<SummaryReel | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const generateSummaryReel = useCallback(
+    async (pdfUrl: string, documentId: string): Promise<void> => {
+      const userId = cookies.get("id");
+      if (!userId) {
+        toast.error("User not authenticated");
+        return;
+      }
+
+      try {
+        setIsGenerating(true);
+        toast.info("🎨 Creating visual summary reel...");
+
+        const response = await fetch("/api/generate-summary", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            pdfUrl: pdfUrl,
+            documentId: documentId,
+            userId: userId,
+            isReel: true,
+          }),
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.summaryReel) {
+          setSummaryReel(result.summaryReel);
+          setIsVisible(true);
+          toast.success("🎉 Visual summary reel created!");
+        } else {
+          toast.error(result.error || "Failed to create summary reel");
+        }
+      } catch (error) {
+        console.error("Error generating summary reel:", error);
+        toast.error("Failed to create summary reel");
+      } finally {
+        setIsGenerating(false);
+      }
+    },
+    [],
+  );
+
+  const showReel = useCallback((reel: SummaryReel) => {
+    setSummaryReel(reel);
+    setIsVisible(true);
+  }, []);
+
+  const hideReel = useCallback(() => {
+    setIsVisible(false);
+    // Keep the reel data but hide it
+  }, []);
+
+  const clearReel = useCallback(() => {
+    setSummaryReel(null);
+    setIsVisible(false);
+  }, []);
+
+  return {
+    summaryReel,
+    isVisible,
+    isGenerating,
+    generateSummaryReel,
+    showReel,
+    hideReel,
+    clearReel,
+  };
 }
