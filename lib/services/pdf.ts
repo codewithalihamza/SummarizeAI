@@ -59,4 +59,33 @@ export class PdfService {
       return { success: false, error: "Failed to fetch PDF" };
     }
   }
+
+  static async updatePdfSummary(
+    id: string,
+    userId: string,
+    data: { summaryText?: string; status?: "pending" | "completed" | "failed" }
+  ) {
+    try {
+      const [pdf] = await db
+        .update(pdfSummaries)
+        .set({
+          ...data,
+          updatedAt: new Date(),
+        })
+        .where(and(eq(pdfSummaries.id, id), eq(pdfSummaries.userId, userId)))
+        .returning();
+
+      if (!pdf) {
+        return { success: false, error: "PDF not found" };
+      }
+
+      return { success: true, pdf };
+    } catch (error) {
+      console.error("Error updating PDF summary:", error);
+      return { success: false, error: "Failed to update PDF summary" };
+    }
+  }
 }
+
+// Export the updatePdfSummary function for direct use
+export const updatePdfSummary = PdfService.updatePdfSummary;

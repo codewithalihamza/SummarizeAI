@@ -2,11 +2,13 @@
 
 import { DocumentDetailSkeleton } from "@/components/loading/document-detail-skeleton";
 import { Button } from "@/components/ui/button";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
+import { SummaryReelComponent } from "@/components/ui/summary-reel";
 import { PRIVATE_ROUTES } from "@/constants/routes";
 import { getStatusColor, getStatusText } from "@/constants/text.constant";
-import { useDocumentDetail, useExtractPdfText } from "@/hooks/document.hook";
+import { useDocumentDetail, useExtractPdfText, useSummaryReel } from "@/hooks/document.hook";
 import { formatDate } from "@/lib/utils";
-import { ArrowLeft, FileText, Sparkles } from "lucide-react";
+import { ArrowLeft, FileText, Play, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { use } from "react";
 
@@ -17,8 +19,9 @@ export default function DocumentDetail({
 }) {
   const router = useRouter();
   const { id: documentId } = use(params);
-  const { document, isLoading } = useDocumentDetail(documentId);
+  const { document, isLoading, refetch } = useDocumentDetail(documentId);
   const { handleGenerateSummary, isExtracting } = useExtractPdfText();
+  const { summaryReel, isVisible, isGenerating, generateSummaryReel, hideReel } = useSummaryReel();
 
   if (isLoading) {
     return <DocumentDetailSkeleton />;
@@ -45,29 +48,40 @@ export default function DocumentDetail({
     );
   }
 
+  const handleGenerateAISummary = async () => {
+    const result = await handleGenerateSummary(document.originalFileUrl, documentId);
+    if (result) {
+      await refetch();
+    }
+  };
+
+  const handleShowSummaryReel = async () => {
+    await generateSummaryReel(document.originalFileUrl, documentId);
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
         <Button
           variant="outline"
           size="icon"
           onClick={() => router.push(PRIVATE_ROUTES.DOCUMENTS)}
-          className="h-10 w-10"
+          className="h-8 w-8 sm:h-10 sm:w-10 self-start"
         >
-          <ArrowLeft className="h-5 w-5 text-white" />
+          <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
         </Button>
-        <div>
-          <h1 className="text-3xl font-bold">{document.fileName}</h1>
-          <p className="text-gray-400 mt-1">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl font-bold break-words">{document.fileName}</h1>
+          <p className="text-gray-400 mt-1 text-sm sm:text-base">
             Uploaded on {formatDate(document.createdAt)}
           </p>
         </div>
       </div>
 
       {/* Document Details */}
-      <div className="bg-black/40 backdrop-blur-xl rounded-2xl border border-[#4F6BFF]/20 p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="bg-black/40 backdrop-blur-xl rounded-2xl border border-[#4F6BFF]/20 p-4 sm:p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
           <div>
             <h2 className="text-xl font-semibold mb-4">Document Information</h2>
             <div className="space-y-4">
@@ -98,22 +112,38 @@ export default function DocumentDetail({
 
           <div>
             <h2 className="text-xl font-semibold mb-4">Actions</h2>
-            <div className="flex gap-5 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Button
-                className="bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
+                className="w-full sm:w-auto bg-gradient-to-r text-white from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 flex-shrink-0"
                 onClick={() => window.open(document.originalFileUrl, "_blank")}
               >
-                <FileText className="h-5 w-5 mr-2" />
-                View Original PDF
+                <FileText className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                <span className="text-sm sm:text-base">View PDF</span>
               </Button>
+
               <Button
-                className="bg-[#4F6BFF] hover:bg-[#4F6BFF]/90"
-                onClick={() => handleGenerateSummary(document.originalFileUrl)}
-                disabled={isExtracting}
+                className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-green-700 text-white hover:from-green-700 hover:to-green-800 flex-shrink-0"
+                onClick={handleGenerateAISummary}
+                disabled={isExtracting || !!document?.summaryText}
               >
-                <Sparkles className="h-5 w-5 mr-2" />
-                {isExtracting ? "Extracting..." : "Generate Summary"}
+                <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                <span className="text-sm sm:text-base">
+                  {isExtracting ? "Generating..." : "Generate Summary"}
+                </span>
               </Button>
+
+              {document.status === "completed" && document.summaryText && (
+                <Button
+                  className="w-full sm:w-auto bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 flex-shrink-0"
+                  onClick={handleShowSummaryReel}
+                  disabled={isGenerating}
+                >
+                  <Play className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                  <span className="text-sm sm:text-base">
+                    {isGenerating ? "Creating..." : "Show Reel"}
+                  </span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -121,9 +151,9 @@ export default function DocumentDetail({
         {/* Summary Section */}
         {document.status === "completed" && document.summaryText && (
           <div className="mt-8">
-            <h2 className="text-xl font-semibold mb-4">Document Summary</h2>
+            <h2 className="text-xl font-semibold mb-4">AI-Generated Summary</h2>
             <div className="bg-black/20 p-6 rounded-xl border border-[#4F6BFF]/10">
-              <p className="whitespace-pre-line">{document.summaryText}</p>
+              <MarkdownRenderer content={document.summaryText} />
             </div>
           </div>
         )}
@@ -134,20 +164,26 @@ export default function DocumentDetail({
             <h2 className="text-xl font-semibold mb-4">Document Summary</h2>
             <div className="bg-black/20 p-6 rounded-xl border border-[#4F6BFF]/10 text-center">
               {document.status === "pending" ? (
-                <p>
-                  Your document is being processed. Please check back later for
-                  the summary.
-                </p>
+                <div>
+                  <p>
+                    There is no summary for this document. Please generate one by clicking the generate summary button.
+                  </p>
+                </div>
               ) : (
                 <p>
                   There was an error processing your document. Please try
-                  uploading it again.
+                  generating the AI summary again.
                 </p>
               )}
             </div>
           </div>
         )}
       </div>
+
+      {/* Summary Reel Modal */}
+      {isVisible && summaryReel && (
+        <SummaryReelComponent summaryReel={summaryReel} onClose={hideReel} />
+      )}
     </div>
   );
 }

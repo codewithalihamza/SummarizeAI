@@ -11,8 +11,17 @@ export interface UseDocumentsReturn {
   refetch: () => Promise<void>;
 }
 export interface UseExtractPdfTextReturn {
-  handleGenerateSummary: (pdfUrl: string) => Promise<string | null>;
+  handleGenerateSummary: (pdfUrl: string, documentId?: string) => Promise<string | null>;
   isExtracting: boolean;
+}
+
+export interface SummaryReel {
+  title: string;
+  subtitle: string;
+  keyPoints: string[];
+  callToAction: string;
+  hashtags: string[];
+  emoji: string;
 }
 
 export type UploadPdfData = {
