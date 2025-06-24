@@ -63,18 +63,12 @@ export default function Home() {
             <Button
               size="lg"
               className="relative px-10 py-6 bg-black text-white hover:bg-black/90 border border-[#4F6BFF]/50 group-hover:border-[#4F6BFF] text-lg font-semibold flex items-center gap-2"
+              onClick={() => router.push(PUBLIC_ROUTES.LOGIN)}
             >
               Start Summarizing Now
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </Button>
           </div>
-          <Button
-            variant="outline"
-            size="lg"
-            className="px-10 py-6 border-gray-600 text-gray-300 hover:border-[#4F6BFF]/50 hover:text-white hover:bg-black/50 text-lg font-semibold"
-          >
-            Watch Demo
-          </Button>
         </div>
 
         {/* Stats Section */}
