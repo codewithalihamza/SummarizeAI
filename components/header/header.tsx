@@ -30,8 +30,8 @@ const Header = () => {
       setIsScrolled(window.scrollY > 50);
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Close mobile menu when clicking outside
@@ -43,11 +43,11 @@ const Header = () => {
     };
 
     if (isMenuOpen) {
-      document.addEventListener('click', handleClickOutside);
+      document.addEventListener("click", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, [isMenuOpen]);
 
@@ -65,13 +65,19 @@ const Header = () => {
 
   return (
     <>
-      <header className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled
-        ? 'backdrop-blur-xl bg-black/90 border-b border-[#4F6BFF]/30 shadow-lg shadow-[#4F6BFF]/5'
-        : 'backdrop-blur-md bg-black/70 border-b border-[#4F6BFF]/20'
-        }`}>
+      <header
+        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
+          isScrolled
+            ? "backdrop-blur-xl bg-black/90 border-b border-[#4F6BFF]/30 shadow-lg shadow-[#4F6BFF]/5"
+            : "backdrop-blur-md bg-black/70 border-b border-[#4F6BFF]/20"
+        }`}
+      >
         {/* Animated background pattern */}
-        <div className={`absolute inset-0 bg-[linear-gradient(to_right,#4F6BFF08_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF08_1px,transparent_1px)] bg-[size:20px_20px] transition-opacity duration-500 ${isScrolled ? 'opacity-30' : 'opacity-50'
-          }`} />
+        <div
+          className={`absolute inset-0 bg-[linear-gradient(to_right,#4F6BFF08_1px,transparent_1px),linear-gradient(to_bottom,#4F6BFF08_1px,transparent_1px)] bg-[size:20px_20px] transition-opacity duration-500 ${
+            isScrolled ? "opacity-30" : "opacity-50"
+          }`}
+        />
 
         {/* Animated glow effect */}
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#4F6BFF]/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-1000" />
@@ -113,12 +119,18 @@ const Header = () => {
           >
             <div className="relative w-6 h-6">
               <Menu
-                className={`absolute inset-0 h-6 w-6 text-white transition-all duration-300 ${isMenuOpen ? 'opacity-0 rotate-90 scale-75' : 'opacity-100 rotate-0 scale-100'
-                  }`}
+                className={`absolute inset-0 h-6 w-6 text-white transition-all duration-300 ${
+                  isMenuOpen
+                    ? "opacity-0 rotate-90 scale-75"
+                    : "opacity-100 rotate-0 scale-100"
+                }`}
               />
               <X
-                className={`absolute inset-0 h-6 w-6 text-white transition-all duration-300 ${isMenuOpen ? 'opacity-100 rotate-0 scale-100' : 'opacity-0 -rotate-90 scale-75'
-                  }`}
+                className={`absolute inset-0 h-6 w-6 text-white transition-all duration-300 ${
+                  isMenuOpen
+                    ? "opacity-100 rotate-0 scale-100"
+                    : "opacity-0 -rotate-90 scale-75"
+                }`}
               />
             </div>
           </button>
@@ -129,17 +141,21 @@ const Header = () => {
               <Link
                 key={item.name}
                 href={item.href}
-                className={`relative px-4 py-2 font-medium text-sm rounded-lg transition-all duration-300 group ${isActiveLink(item.href)
-                  ? 'text-[#4F6BFF] bg-[#4F6BFF]/10'
-                  : 'text-gray-400 hover:text-white hover:bg-[#4F6BFF]/5'
-                  }`}
+                className={`relative px-4 py-2 font-medium text-sm rounded-lg transition-all duration-300 group ${
+                  isActiveLink(item.href)
+                    ? "text-[#4F6BFF] bg-[#4F6BFF]/10"
+                    : "text-gray-400 hover:text-white hover:bg-[#4F6BFF]/5"
+                }`}
               >
                 {/* Animated underline */}
                 <span className="relative z-10">{item.name}</span>
-                <div className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#4F6BFF] to-[#6B7FFF] transition-all duration-300 ${isActiveLink(item.href)
-                  ? 'w-full'
-                  : 'w-0 group-hover:w-full'
-                  }`} />
+                <div
+                  className={`absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-[#4F6BFF] to-[#6B7FFF] transition-all duration-300 ${
+                    isActiveLink(item.href)
+                      ? "w-full"
+                      : "w-0 group-hover:w-full"
+                  }`}
+                />
 
                 {/* Hover glow effect */}
                 <div className="absolute inset-0 bg-gradient-to-r from-[#4F6BFF]/0 via-[#4F6BFF]/10 to-[#4F6BFF]/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-lg blur-sm" />
@@ -166,10 +182,13 @@ const Header = () => {
         </div>
 
         {/* Enhanced Mobile Menu with smooth animations */}
-        <div className={`md:hidden absolute top-full left-0 right-0 transition-all duration-500 ease-in-out ${isMenuOpen
-          ? 'opacity-100 translate-y-0 pointer-events-auto'
-          : 'opacity-0 -translate-y-4 pointer-events-none'
-          }`}>
+        <div
+          className={`md:hidden absolute top-full left-0 right-0 transition-all duration-500 ease-in-out ${
+            isMenuOpen
+              ? "opacity-100 translate-y-0 pointer-events-auto"
+              : "opacity-0 -translate-y-4 pointer-events-none"
+          }`}
+        >
           <div className="bg-black/95 backdrop-blur-xl border-b border-[#4F6BFF]/20 mx-4 mt-2 rounded-2xl overflow-hidden shadow-2xl shadow-[#4F6BFF]/10">
             {/* Mobile navigation items */}
             <nav className="p-6 space-y-2">
@@ -177,14 +196,17 @@ const Header = () => {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 ${isActiveLink(item.href)
-                    ? 'text-[#4F6BFF] bg-[#4F6BFF]/10'
-                    : 'text-gray-400 hover:text-white hover:bg-[#4F6BFF]/5'
-                    }`}
+                  className={`group flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-300 ${
+                    isActiveLink(item.href)
+                      ? "text-[#4F6BFF] bg-[#4F6BFF]/10"
+                      : "text-gray-400 hover:text-white hover:bg-[#4F6BFF]/5"
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                   style={{
                     animationDelay: `${index * 50}ms`,
-                    animation: isMenuOpen ? 'slideInUp 0.3s ease-out forwards' : undefined
+                    animation: isMenuOpen
+                      ? "slideInUp 0.3s ease-out forwards"
+                      : undefined,
                   }}
                 >
                   <span className="font-medium">{item.name}</span>

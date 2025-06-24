@@ -94,12 +94,13 @@ export function SummaryReelComponent({
               {slides.map((slide, index) => (
                 <div
                   key={index}
-                  className={`absolute inset-0 transition-transform duration-500 ease-in-out ${index === currentSlide
-                    ? "translate-x-0"
-                    : index < currentSlide
-                      ? "-translate-x-full"
-                      : "translate-x-full"
-                    }`}
+                  className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
+                    index === currentSlide
+                      ? "translate-x-0"
+                      : index < currentSlide
+                        ? "-translate-x-full"
+                        : "translate-x-full"
+                  }`}
                 >
                   {slide.type === "title" && (
                     <div className="h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
@@ -152,8 +153,6 @@ export function SummaryReelComponent({
                 </div>
               ))}
 
-
-
               {/* Progress dots and navigation */}
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center space-x-4">
                 <button
@@ -168,8 +167,9 @@ export function SummaryReelComponent({
                     <button
                       key={index}
                       onClick={() => setCurrentSlide(index)}
-                      className={`w-2 h-2 rounded-full transition-colors ${index === currentSlide ? "bg-white" : "bg-white/50"
-                        }`}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentSlide ? "bg-white" : "bg-white/50"
+                      }`}
                     />
                   ))}
                 </div>
