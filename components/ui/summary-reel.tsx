@@ -3,6 +3,8 @@
 import { SummaryReel } from "@/types";
 import {
   Bookmark,
+  ChevronLeft,
+  ChevronRight,
   Heart,
   MessageCircle,
   MoreHorizontal,
@@ -81,7 +83,7 @@ export function SummaryReelComponent({
                   <p className="text-white font-semibold text-sm">
                     SummarizeAI
                   </p>
-                  <p className="text-gray-400 text-xs">Powered by Gemini</p>
+                  <p className="text-gray-400 text-xs">Powered by AI</p>
                 </div>
               </div>
               <MoreHorizontal className="w-5 h-5 text-gray-400" />
@@ -92,13 +94,12 @@ export function SummaryReelComponent({
               {slides.map((slide, index) => (
                 <div
                   key={index}
-                  className={`absolute inset-0 transition-transform duration-500 ease-in-out ${
-                    index === currentSlide
-                      ? "translate-x-0"
-                      : index < currentSlide
-                        ? "-translate-x-full"
-                        : "translate-x-full"
-                  }`}
+                  className={`absolute inset-0 transition-transform duration-500 ease-in-out ${index === currentSlide
+                    ? "translate-x-0"
+                    : index < currentSlide
+                      ? "-translate-x-full"
+                      : "translate-x-full"
+                    }`}
                 >
                   {slide.type === "title" && (
                     <div className="h-full flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-600 to-purple-600 text-white">
@@ -151,31 +152,34 @@ export function SummaryReelComponent({
                 </div>
               ))}
 
-              {/* Navigation arrows */}
-              <button
-                onClick={prevSlide}
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
-              >
-                ←
-              </button>
-              <button
-                onClick={nextSlide}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
-              >
-                →
-              </button>
 
-              {/* Progress dots */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
-                {slides.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentSlide ? "bg-white" : "bg-white/50"
-                    }`}
-                  />
-                ))}
+
+              {/* Progress dots and navigation */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center space-x-4">
+                <button
+                  onClick={prevSlide}
+                  className="w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                </button>
+
+                <div className="flex space-x-2">
+                  {slides.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentSlide(index)}
+                      className={`w-2 h-2 rounded-full transition-colors ${index === currentSlide ? "bg-white" : "bg-white/50"
+                        }`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  onClick={nextSlide}
+                  className="w-8 h-8 bg-black/50 rounded-full flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                >
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
             </div>
 
