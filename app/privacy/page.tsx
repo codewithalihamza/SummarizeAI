@@ -1,3 +1,6 @@
+import { PUBLIC_ROUTES } from "@/constants/routes";
+import Link from "next/link";
+
 export default function Privacy() {
   return (
     <div className="relative min-h-screen bg-black text-white pt-24 pb-8 px-8">
@@ -138,12 +141,12 @@ export default function Privacy() {
               <h2 className="text-2xl font-semibold mb-4">Contact Us</h2>
               <p className="text-gray-300 leading-relaxed">
                 If you have any questions about this Privacy Policy or how we handle your data, please{" "}
-                <a
-                  href="/contact"
+                <Link
+                  href={PUBLIC_ROUTES.CONTACT}
                   className="text-[#4F6BFF] hover:text-[#4F6BFF]/80 underline"
                 >
                   contact us
-                </a>
+                </Link>
                 . We are committed to addressing your privacy concerns promptly and transparently.
               </p>
             </section>

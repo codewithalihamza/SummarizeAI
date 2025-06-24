@@ -1,3 +1,6 @@
+import { PUBLIC_ROUTES } from "@/constants/routes";
+import Link from "next/link";
+
 export default function Terms() {
   return (
     <div className="relative min-h-screen bg-black text-white pt-24 pb-8 px-8">
@@ -204,12 +207,12 @@ export default function Terms() {
               <p className="text-gray-300 leading-relaxed">
                 If you have any questions about these Terms of Service or need clarification on any provisions,
                 please{" "}
-                <a
-                  href="/contact"
+                <Link
+                  href={PUBLIC_ROUTES.CONTACT}
                   className="text-[#4F6BFF] hover:text-[#4F6BFF]/80 underline"
                 >
                   contact us
-                </a>
+                </Link>
                 . We are here to help and ensure you understand your rights and obligations when using our service.
               </p>
             </section>
